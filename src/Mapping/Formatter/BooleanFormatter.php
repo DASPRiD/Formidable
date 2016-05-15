@@ -1,22 +1,18 @@
 <?php
 declare(strict_types = 1);
 
-namespace DASPRiD\SimpleForm\Mapping\Formatter;
+namespace DASPRiD\Formidable\Mapping\Formatter;
+
+use DASPRiD\Formidable\Data;
 
 final class BooleanFormatter implements FormatterInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function bind(string $key, array $data) : bool
+    public function bind(string $key, Data $data) : bool
     {
-        $value = 'false';
-
-        if (array_key_exists($key, $data)) {
-            $value = $data[$key];
-        }
-
-        switch ($value) {
+        switch ($data->getValue($key, 'false')) {
             case 'true':
                 return true;
 
@@ -30,12 +26,12 @@ final class BooleanFormatter implements FormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function unbind(string $key, $value) : array
+    public function unbind(string $key, $value) : Data
     {
         if (!is_bool($value)) {
             // @todo throw exception
         }
 
-        return [$key => $value ? 'true' : 'false'];
+        return new Data([$key => $value ? 'true' : 'false']);
     }
 }

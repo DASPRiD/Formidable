@@ -1,14 +1,16 @@
 <?php
 declare(strict_types = 1);
 
-namespace DASPRiD\SimpleForm\Mapping\Formatter;
+namespace DASPRiD\Formidable\Mapping\Formatter;
+
+use DASPRiD\Formidable\Data;
 
 interface FormatterInterface
 {
     /**
      * @return mixed
      */
-    public function bind(array $data);
+    public function bind(Data $data);
 
-    public function unbind(string $key, $value) : array;
+    public function unbind(string $key, $value) : Data;
 }

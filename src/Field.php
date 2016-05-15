@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace DASPRiD\SimpleForm;
+namespace DASPRiD\Formidable;
 
 final class Field
 {

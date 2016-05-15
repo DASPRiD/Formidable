@@ -1,10 +1,13 @@
 <?php
 declare(strict_types = 1);
 
-namespace DASPRiD\SimpleForm\Mapping;
+namespace DASPRiD\Formidable\Mapping;
 
-use DASPRiD\SimpleForm\Mapping\Formatter\FormatterInterface;
-use DASPRiD\SimpleForm\Mapping\Formatter\TextFormatter;
+use DASPRiD\Formidable\Data;
+use DASPRiD\Formidable\Mapping\Formatter\BooleanFormatter;
+use DASPRiD\Formidable\Mapping\Formatter\FormatterInterface;
+use DASPRiD\Formidable\Mapping\Formatter\IntegerFormatter;
+use DASPRiD\Formidable\Mapping\Formatter\TextFormatter;
 
 final class FieldMapping implements MappingInterface
 {
@@ -38,11 +41,12 @@ final class FieldMapping implements MappingInterface
         return new self(new BooleanFormatter());
     }
 
-    public function bind(array $data)
+    public function bind(Data $data)
     {
+        $this->binder->bind($data);
     }
 
-    public function unbind($value) : array
+    public function unbind($value) : Data
     {
         return $this->binder->unbind($this->key, $value);
     }

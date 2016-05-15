@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace DASPRiD\SimpleForm\Mapping;
+namespace DASPRiD\Formidable\Mapping;
 
 use ReflectionClass;
 
@@ -43,7 +43,7 @@ final class ObjectMapping implements MappingInterface
         $this->className = $className;
     }
 
-    public function bind(array $data)
+    public function bind(Data $data)
     {
         $reflectionClass = new ReflectionClass($this->className);
         $reflectionMethod = $reflectionClass->getMethod('__construct');
@@ -54,30 +54,26 @@ final class ObjectMapping implements MappingInterface
             $arguments[$reflectionParameter->getName()] = null;
         }
 
-        foreach ($data as $key => $value) {
-            if (!array_key_exists($key, $arguments) || !array_key_exists($key, $this->mappings)) {
-                continue;
-            }
-
-            $arguments[$key] = $this->mappings[$key]->bind($data);
+        foreach ($this->mappings as $key => $mapping) {
+            $arguments[$key] = $mapping->bind($data);
         }
 
         return $reflectionClass->newInstance($arguments);
     }
 
-    public function unbind($value) : array
+    public function unbind($value) : Data
     {
         if (!$value instanceof $this->className) {
             // @todo throw exception
         }
 
-        $values = [];
+        $data = new Data([]);
 
         foreach ($this->mappings as $mapping) {
-            $values += $mapping->unbind($value);
+            $data = $data->merge($mapping->unbind($value));
         }
 
-        return $values;
+        return $data;
     }
 
     public function withPrefix(string $prefix) : self

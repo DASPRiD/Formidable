@@ -1,9 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace DASPRiD\SimpleForm;
+namespace DASPRiD\Formidable;
 
-use DASPRiD\SimpleForm\Mapping\ObjectMapping;
+use DASPRiD\Formidable\Mapping\ObjectMapping;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class Form
@@ -14,7 +14,7 @@ final class Form
     private $mapping;
 
     /**
-     * @var string[]
+     * @var Data
      */
     private $data = [];
 
@@ -36,18 +36,23 @@ final class Form
         return $form;
     }
 
-    public function bindFromRequest(ServerRequestInterface $request) : self
+    public function bind(Data $data) : self
     {
-        if ('POST' !== $request->getMethod()) {
-            return $this;
-        }
-
         $form = clone $this;
-        $data = $request->getParsedBody();
-
         $form->data = $data;
         $form->value = $this->mapping->bind($data);
         return $form;
+    }
+
+    public function bindFromRequest(ServerRequestInterface $request) : self
+    {
+        if ('POST' === $request->getMethod()) {
+            $data = new Data($request->getParsedBody());
+        } else {
+            $data = new Data($request->getQueryParams());
+        }
+
+        return $this->bind($data);
     }
 
     public function get()

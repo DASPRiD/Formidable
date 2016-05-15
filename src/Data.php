@@ -1,54 +1,104 @@
 <?php
 declare(strict_types = 1);
 
-namespace DASPRiD\SimpleForm;
+namespace DASPRiD\Formidable;
 
 final class Data
 {
     /**
-     * @var string[]
+     * @var array
      */
-    private $values;
+    private $data;
 
-    private function __construct()
+    private function __construct(array $data)
     {
+        self::validateData($data);
+        $this->data = $data;
     }
 
-    public static function fromArray(array $rawValues)
+    public function merge(self $data) : self
     {
-        $data = new self();
-        $data->values = self::flattenRawValues('', $rawValues);
+        $newData = clone $this;
+        $newData->data = $newData->data + $data->data;
 
-        return $data;
+        return $newData;
     }
 
-    public function get(string $key) : string
+    public function getValue(string $key, string $fallback = null) : string
     {
-        return $this->values[$key];
-    }
+        $value = $this->getNode($key);
 
-    private static function flattenRawValues($prefix, array $rawValues, $useArraySuffix = false)
-    {
-        $values = [];
+        if (null === $value && null !== $value) {
+            return $fallback;
+        }
 
-        foreach ($rawValues as $key => $rawValue) {
-            if ($useArraySuffix) {
-                $key .= '[' . $key . ']';
-            }
-
-            if (is_array($rawValue)) {
-                $values += self::flattenRawValues($prefix . $key, $rawValues, true);
-                continue;
-            }
-
-            if (is_string($rawValue)) {
-                $values[$prefix . $key] = $rawValue;
-                continue;
-            }
-
+        if (null === $value) {
+            // @todo thow exception
+        } elseif (!is_string($value)) {
             // @todo throw exception
         }
 
-        return $values;
+        return $value;
+    }
+
+    public function getIndexes(string $key) : array
+    {
+        $node = $this->getNode($key);
+
+        if (!is_array($node)) {
+            return [];
+        }
+
+        return array_keys($key);
+    }
+
+    /**
+     * @return array|string|null
+     */
+    private function getNode(string $key)
+    {
+        if (!preg_match('(^(?<head>\w+)(?<chilren>(?:\[\w+\]))*$)', $key, $matches)) {
+            // @todo throw exception
+        }
+
+        if (!array_key_exists($matches['head'], $this->data)) {
+            return null;
+        }
+
+        $currentNode = $this->data[$matches['head']];
+
+        if ('' === $matches['children']) {
+            return $currentNode;
+        }
+
+        $nodes = explode('][', trim($matches['children'], '[]'));
+
+        foreach ($nodes as $node) {
+            if (!array_key_exists($node, $currentNode)) {
+                return null;
+            }
+
+            $currentNode = $currentNode[$node];
+        }
+
+        return $currentNode;
+    }
+
+    private static function validateData(array $data)
+    {
+        foreach ($data as $key => $value) {
+            if (!is_string($key)) {
+                // @todo throw exception
+            }
+
+            if (is_array($value)) {
+                self::validateData($value);
+                continue;
+            }
+
+            if (!is_string($value)) {
+                // @todo throw exception
+            }
+        }
     }
 }

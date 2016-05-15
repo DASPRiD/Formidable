@@ -1,35 +1,33 @@
 <?php
 declare(strict_types = 1);
 
-namespace DASPRiD\SimpleForm\Mapping\Formatter;
+namespace DASPRiD\Formidable\Mapping\Formatter;
+
+use DASPRiD\Formidable\Data;
 
 final class TextFormatter implements FormatterInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function bind(string $key, array $data) : string
+    public function bind(string $key, Data $data) : string
     {
-        if (!array_key_exists($key, $data)) {
-            // @todo return form error
+        if (!$data->hasValue($key)) {
+            // @todo check if required
         }
 
-        if (!is_string($data[$key])) {
-            // @todo return invalid type error
-        }
-
-        return $data[$key];
+        return $data->getValue($key);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function unbind(string $key, $value) : array
+    public function unbind(string $key, $value) : Data
     {
         if (!is_string($value)) {
             // @todo throw exception
         }
 
-        return [$key => $value];
+        return new Data([$key => $value]);
     }
 }
