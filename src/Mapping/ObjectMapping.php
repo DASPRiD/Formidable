@@ -7,6 +7,8 @@ use ReflectionClass;
 
 final class ObjectMapping implements MappingInterface
 {
+    use MappingTrait;
+
     /**
      * @var array
      */
@@ -20,20 +22,19 @@ final class ObjectMapping implements MappingInterface
     /**
      * @var string
      */
-    private $key = '';
+    private $key;
 
     /**
      * @param MappingInterface[] $mappings
-     * @param string $className
      */
-    public function __construct(array $mappings, $className)
+    public function __construct(array $mappings, $className, string $key = '')
     {
-        foreach ($mappings as $key => $mapping) {
+        foreach ($mappings as $mappingKey => $mapping) {
             if (!is_string($key)) {
                 // @todo exception
             }
 
-            $this->mappings[$key] = $mapping->withPrefix($key);
+            $this->mappings[$mappingKey] = $mapping->withPrefixAndRelativeKey($key, $mappingKey);
         }
 
         if (!class_exists($className)) {
@@ -41,6 +42,7 @@ final class ObjectMapping implements MappingInterface
         }
 
         $this->className = $className;
+        $this->key = $key;
     }
 
     public function bind(Data $data)
@@ -76,11 +78,12 @@ final class ObjectMapping implements MappingInterface
         return $data;
     }
 
-    public function withPrefix(string $prefix) : self
+    public function withPrefixAndRelativeKey(string $prefix, string $relativeKey) : self
     {
-        $objectMapping = clone $this;
-        $objectMapping->key = $prefix . $objectMapping->key;
-
-        return $objectMapping;
+        return new self(
+            $this->mappings,
+            $this->className,
+            $this->createKeyFromPrefixAndRelativeKey($prefix, $relativeKey)
+        );
     }
 }

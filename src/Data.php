@@ -52,6 +52,27 @@ final class Data
         return array_keys($key);
     }
 
+    public function getValues(string $key) : array
+    {
+        $node = $this->getNode($key);
+
+        if (!is_array($node)) {
+            return [];
+        }
+
+        $values = [];
+
+        foreach ($node as $key => $value) {
+            if (!is_string($value)) {
+                continue;
+            }
+
+            $values[$key] = $value;
+        }
+
+        return $values;
+    }
+
     /**
      * @return array|string|null
      */

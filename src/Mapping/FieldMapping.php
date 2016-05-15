@@ -11,6 +11,8 @@ use DASPRiD\Formidable\Mapping\Formatter\TextFormatter;
 
 final class FieldMapping implements MappingInterface
 {
+    use MappingTrait;
+
     /**
      * @var Formatter
      */
@@ -51,11 +53,10 @@ final class FieldMapping implements MappingInterface
         return $this->binder->unbind($this->key, $value);
     }
 
-    public function withPrefix(string $prefix) : self
+    public function withPrefixAndRelativeKey(string $prefix, string $relativeKey) : self
     {
-        $fieldMapping = clone $this;
-        $fieldMapping->key = $prefix . $fieldMapping->key;
-
-        return $fieldMapping;
+        $clone = clone $this;
+        $clone->key = $this->createKeyFromPrefixAndRelativeKey($prefix, $relativeKey);
+        return $clone;
     }
 }
