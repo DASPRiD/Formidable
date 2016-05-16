@@ -25,14 +25,14 @@ final class IntegerFormatter implements FormatterInterface
 
         $value = $data->getValue($key);
 
-        if (!preg_match('(^[1-9]\d*$)', $value)) {
+        if (!preg_match('(^-?[1-9]\d*$)', $value)) {
             return BindResult::fromFormErrors(new FormErrorSequence(new FormError(
                 $key,
                 'error.integer'
             )));
         }
 
-        return BindResult::fromValue((int) $data[$key]);
+        return BindResult::fromValue((int) $data->getValue($key));
     }
 
     /**
@@ -44,6 +44,6 @@ final class IntegerFormatter implements FormatterInterface
             throw InvalidValue::fromNonInteger($value);
         }
 
-        return new Data([$key => (string) $value]);
+        return Data::fromFlatArray([$key => (string) $value]);
     }
 }
