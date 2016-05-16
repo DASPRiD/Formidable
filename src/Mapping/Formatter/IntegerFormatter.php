@@ -13,7 +13,7 @@ final class IntegerFormatter implements FormatterInterface
     /**
      * {@inheritdoc}
      */
-    public function bind(string $key, Data $data) : int
+    public function bind(string $key, Data $data) : BindResult
     {
         if (!$data->hasKey($key)) {
             return BindResult::fromFormErrors(new FormErrorSequence(new FormError(

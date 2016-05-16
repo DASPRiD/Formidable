@@ -4,13 +4,16 @@ declare(strict_types = 1);
 namespace DASPRiD\Formidable\Mapping\Formatter;
 
 use DASPRiD\Formidable\Data;
+use DASPRiD\Formidable\FormError\FormError;
+use DASPRiD\Formidable\FormError\FormErrorSequence;
+use DASPRiD\Formidable\Mapping\BindResult;
 
 final class TextFormatter implements FormatterInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function bind(string $key, Data $data) : string
+    public function bind(string $key, Data $data) : BindResult
     {
         if (!$data->hasKey($key)) {
             return BindResult::fromFormErrors(new FormErrorSequence(new FormError(
