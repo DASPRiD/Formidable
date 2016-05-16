@@ -3,6 +3,8 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable;
 
+use DASPRiD\Formidable\FormError\FormErrorSequence;
+
 final class Field
 {
     /**
@@ -20,14 +22,25 @@ final class Field
      */
     private $fieldErrors;
 
-    public function __construct(string $key, $fieldErrors, $fieldValue = null)
+    public function __construct(string $key, string $fieldValue, FormErrorSequence $fieldErrors)
     {
         $this->key = $key;
         $this->fieldValue = $fieldValue;
+        $this->fieldErrors = $fieldErrors;
     }
 
-    public function hasValue() : bool
+    public function getKey() : string
     {
-        return null !== $this->fieldValue;
+        return $this->key;
+    }
+
+    public function getFieldValue() : string
+    {
+        return $this->fieldValue;
+    }
+
+    public function getFieldErrors() : FormErrorSequence
+    {
+        return $this->fieldErrors;
     }
 }

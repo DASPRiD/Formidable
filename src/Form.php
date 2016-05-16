@@ -3,13 +3,14 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable;
 
-use DASPRiD\Formidable\Mapping\ObjectMapping;
+use DASPRiD\Formidable\FormError\FormErrorSequence;
+use DASPRiD\Formidable\Mapping\MappingInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class Form
 {
     /**
-     * @var ObjectMapping
+     * @var MappingInterface
      */
     private $mapping;
 
@@ -23,7 +24,12 @@ final class Form
      */
     private $value;
 
-    public function __construct(ObjectMapping $mapping)
+    /**
+     * @var FormErrorSequence
+     */
+    private $errors;
+
+    public function __construct(MappingInterface $mapping)
     {
         $this->mapping = $mapping;
     }
@@ -40,7 +46,15 @@ final class Form
     {
         $form = clone $this;
         $form->data = $data;
-        $form->value = $this->mapping->bind($data);
+
+        $bindResult = $this->mapping->bind($data);
+
+        if ($bindResult->isSuccess()) {
+            $form->value = $bindResult->getValue();
+        } else {
+            $form->errors = $bindResult->getFormErrors();
+        }
+
         return $form;
     }
 
@@ -55,21 +69,21 @@ final class Form
         return $this->bind($data);
     }
 
-    public function get()
+    public function getValue()
     {
+        if (0 < count($this->errors)) {
+            // @todo throw exception
+        }
+
         return $this->formData;
     }
 
-    public function field(string $key) : Field
+    public function getField(string $key) : Field
     {
-        $fieldValue = null;
-
-        if (array_key_exists($key, $this->data)) {
-            $fieldValue = $this->data['key'];
-        }
-
-        $fieldErrors = [];
-
-        return new Field($key, $fieldValue, $fieldErrors);
+        return new Field(
+            $key,
+            $this->data->getValue($key, ''),
+            $this->errors->collect($key)
+        );
     }
 }

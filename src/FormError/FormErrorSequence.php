@@ -33,6 +33,13 @@ final class FormErrorSequence implements Countable, IteratorAggregate
         return new self(array_merge($this->formErrors, $other->formErrors));
     }
 
+    public function collect(string $key) : self
+    {
+        return new self(array_filter($this->formErrors, function (FormError $formError) use ($key) {
+            return $formError->getKey() === $key;
+        }));
+    }
+
     public function count() : int
     {
         return count($this->formErrors);
