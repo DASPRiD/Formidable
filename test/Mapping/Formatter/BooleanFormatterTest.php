@@ -8,6 +8,9 @@ use DASPRiD\Formidable\Mapping\Formatter\BooleanFormatter;
 use DASPRiD\Formidable\Mapping\Formatter\Exception\InvalidValue;
 use PHPUnit_Framework_TestCase as TestCase;
 
+/**
+ * @covers DASPRiD\Formidable\Mapping\Formatter\BooleanFormatter
+ */
 class BooleanFormatterTest extends TestCase
 {
     public function testBindValidTrueValue()

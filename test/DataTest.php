@@ -9,6 +9,9 @@ use DASPRiD\Formidable\Exception\InvalidValue;
 use DASPRiD\Formidable\Exception\NonExistentKey;
 use PHPUnit_Framework_TestCase as TestCase;
 
+/**
+ * @covers DASPRiD\Formidable\Data
+ */
 class DataTest extends TestCase
 {
     public function testGetValueReturnsSetValue()
