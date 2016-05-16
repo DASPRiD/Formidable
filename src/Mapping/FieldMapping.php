@@ -14,7 +14,7 @@ final class FieldMapping implements MappingInterface
     use MappingTrait;
 
     /**
-     * @var Formatter
+     * @var FormatterInterface
      */
     private $binder;
 
@@ -45,7 +45,7 @@ final class FieldMapping implements MappingInterface
 
     public function bind(Data $data) : BindResult
     {
-        $this->binder->bind($data);
+        $this->binder->bind($this->key, $data);
     }
 
     public function unbind($value) : Data
