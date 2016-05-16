@@ -32,7 +32,7 @@ final class FormError
         return $this->key;
     }
 
-    public function getMessage() : message
+    public function getMessage() : string
     {
         return $this->message;
     }

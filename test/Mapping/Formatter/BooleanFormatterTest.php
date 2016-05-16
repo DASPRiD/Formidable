@@ -4,71 +4,53 @@ declare(strict_types = 1);
 namespace DASPRiD\FormidableTest\Mapping\Formatter;
 
 use DASPRiD\Formidable\Data;
-use DASPRiD\Formidable\Exception\InvalidValue;
 use DASPRiD\Formidable\Mapping\Formatter\BooleanFormatter;
+use DASPRiD\Formidable\Mapping\Formatter\Exception\InvalidValue;
 use PHPUnit_Framework_TestCase as TestCase;
 
 class BooleanFormatterTest extends TestCase
 {
     public function testBindValidTrueValue()
     {
-        $data = Data::fromFlatArray(['foo' => 'true']);
-        $formatter = new BooleanFormatter();
-        $formatter->bind('foo', $data);
-        $this->assertSame(true, $formatter->bind('foo', $data)->getValue());
+        $this->assertTrue((new BooleanFormatter())->bind('foo', Data::fromFlatArray(['foo' => 'true']))->getValue());
     }
 
     public function testBindValidFalseValue()
     {
-        $data = Data::fromFlatArray(['foo' => 'false']);
-        $formatter = new BooleanFormatter();
-        $formatter->bind('foo', $data);
-        $this->assertSame(false, $formatter->bind('foo', $data)->getValue());
+        $this->assertFalse((new BooleanFormatter())->bind('foo', Data::fromFlatArray(['foo' => 'false']))->getValue());
     }
 
-    public function testFallbackToFalseOnBindEmptyKey()
+    public function testFallbackToFalseOnBindNonExistentKey()
     {
-        $data = Data::fromFlatArray([]);
-        $formatter = new BooleanFormatter();
-        $this->assertSame(false, $formatter->bind('foo', $data)->getValue());
+        $this->assertFalse((new BooleanFormatter())->bind('foo', Data::fromFlatArray([]))->getValue());
     }
 
     public function testBindEmptyStringValue()
     {
-        $this->markTestIncomplete('Disabled until BindResult::fromFormErrors TypeError is resolved');
-//        $data = Data::fromFlatArray(['foo' => '']);
-//        $this->expectException(InvalidValue::class);
-//        $formatter = new BooleanFormatter();
-//        $this->assertSame(false, $formatter->bind('foo', $data)->getValue());
-    }
+        $bindResult = (new BooleanFormatter())->bind('foo', Data::fromFlatArray(['foo' => '']));
+        $this->assertFalse($bindResult->isSuccess());
+        $this->assertCount(1, $bindResult->getFormErrors());
 
-    public function testBindInvalidStringValue()
-    {
-        $this->markTestIncomplete('Disabled until BindResult::fromFormErrors TypeError is resolved');
-//        $data = Data::fromFlatArray(['foo' => 'bar']);
-//        $formatter = new BooleanFormatter();
-//        $this->expectException(InvalidValue::class);
-//        $formatter->bind('foo', $data);
+        $error = iterator_to_array($bindResult->getFormErrors())[0];
+        $this->assertSame('foo', $error->getKey());
+        $this->assertSame('error.boolean', $error->getMessage());
     }
 
     public function testUnbindValidTrueValue()
     {
-        $formatter = new BooleanFormatter();
-        $data = $formatter->unbind('foo', true);
+        $data = (new BooleanFormatter())->unbind('foo', true);
         $this->assertSame('true', $data->getValue('foo'));
     }
 
     public function testUnbindValidFalseValue()
     {
-        $formatter = new BooleanFormatter();
-        $data = $formatter->unbind('foo', false);
+        $data = (new BooleanFormatter())->unbind('foo', false);
         $this->assertSame('false', $data->getValue('foo'));
     }
 
     public function testUnbindInvalidStringValue()
     {
-        $formatter = new BooleanFormatter();
         $this->expectException(InvalidValue::class);
-        $formatter->unbind('foo', 'false');
+        (new BooleanFormatter())->unbind('foo', 'false');
     }
 }

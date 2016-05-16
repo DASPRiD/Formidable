@@ -14,18 +14,9 @@ final class FormErrorSequence implements Countable, IteratorAggregate
      */
     private $formErrors = [];
 
-    /**
-     * @param FormError[] $formErrors
-     */
-    public function __construct(array $formErrors)
+    public function __construct(FormError ...$formErrors)
     {
-        foreach ($formErrors as $formError) {
-            if (!$formError instanceof FormError) {
-                // @todo throw exception
-            }
-
-            $this->formErrors[] = $formError;
-        }
+        $this->formErrors = $formErrors;
     }
 
     public function merge(self $other)

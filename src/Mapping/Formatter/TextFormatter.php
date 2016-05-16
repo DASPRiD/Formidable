@@ -7,6 +7,7 @@ use DASPRiD\Formidable\Data;
 use DASPRiD\Formidable\FormError\FormError;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
 use DASPRiD\Formidable\Mapping\BindResult;
+use DASPRiD\Formidable\Mapping\Formatter\Exception\InvalidValue;
 
 final class TextFormatter implements FormatterInterface
 {
@@ -18,7 +19,7 @@ final class TextFormatter implements FormatterInterface
         if (!$data->hasKey($key)) {
             return BindResult::fromFormErrors(new FormErrorSequence(new FormError(
                 $key,
-                'missing.value'
+                'error.required'
             )));
         }
 
@@ -31,7 +32,7 @@ final class TextFormatter implements FormatterInterface
     public function unbind(string $key, $value) : Data
     {
         if (!is_string($value)) {
-            // @todo throw exception
+            throw InvalidValue::fromNonString($value);
         }
 
         return new Data([$key => $value]);
