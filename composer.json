@@ -3,6 +3,12 @@
     "description": "PHP 7 form library for handling user input",
     "type": "library",
     "license": "BSD-2-Clause",
+    "authors": [
+        {
+            "name": "Ben Scholzen 'DASPRiD'",
+            "homepage": "https://dasprids.de/"
+        }
+    ],
     "keywords": [
         "form",
         "http",
