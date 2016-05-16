@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace DASPRiD\Formidable\Mapping\Formatter;
 
 use DASPRiD\Formidable\Data;
+use DASPRiD\Formidable\Exception\InvalidValue;
 use DASPRiD\Formidable\FormError\FormError;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
 use DASPRiD\Formidable\Mapping\BindResult;
@@ -35,9 +36,9 @@ final class BooleanFormatter implements FormatterInterface
     public function unbind(string $key, $value) : Data
     {
         if (!is_bool($value)) {
-            // @todo throw exception
+            throw new InvalidValue(sprintf('Value of "%s" must be a Boolean', $key));
         }
 
-        return new Data([$key => $value ? 'true' : 'false']);
+        return Data::fromFlatArray([$key => $value ? 'true' : 'false']);
     }
 }
