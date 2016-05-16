@@ -87,7 +87,7 @@ final class ObjectMapping implements MappingInterface
             // @todo throw exception
         }
 
-        $data = new Data([]);
+        $data = Data::fromFlatArray([]);
 
         foreach ($this->mappings as $mapping) {
             $data = $data->merge($mapping->unbind($value));
