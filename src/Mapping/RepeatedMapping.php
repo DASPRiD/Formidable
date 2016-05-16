@@ -60,7 +60,7 @@ final class RepeatedMapping implements MappingInterface
         return $data;
     }
 
-    public function withPrefixAndRelativeKey(string $prefix, string $relativeKey) : self
+    public function withPrefixAndRelativeKey(string $prefix, string $relativeKey) : MappingInterface
     {
         $clone = clone $this;
         $clone->key = $this->createKeyFromPrefixAndRelativeKey($prefix, $relativeKey);

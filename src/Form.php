@@ -47,9 +47,9 @@ final class Form
     public function bindFromRequest(ServerRequestInterface $request) : self
     {
         if ('POST' === $request->getMethod()) {
-            $data = new Data($request->getParsedBody());
+            $data = Data::fromNestedArray($request->getParsedBody());
         } else {
-            $data = new Data($request->getQueryParams());
+            $data = Data::fromNestedArray($request->getQueryParams());
         }
 
         return $this->bind($data);

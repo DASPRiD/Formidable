@@ -3,6 +3,9 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable;
 
+use DASPRiD\Formidable\Exception\InvalidKey;
+use DASPRiD\Formidable\Exception\InvalidValue;
+
 final class Data
 {
     /**
@@ -12,8 +15,27 @@ final class Data
 
     private function __construct(array $data)
     {
-        self::validateData($data);
         $this->data = $data;
+    }
+
+    public static function fromFlatArray(array $flatArray) : self
+    {
+        $originalCount = count($flatArray);
+
+        if ($originalCount > count(array_filter($flatArray, 'is_string', ARRAY_FILTER_USE_KEY))) {
+            throw InvalidKey::fromArrayWithNonStringKeys($flatArray);
+        }
+
+        if ($originalCount > count(array_filter($flatArray, 'is_string'))) {
+            throw InvalidValue::fromArrayWithNonStringValues($flatArray);
+        }
+
+        return new self($flatArray);
+    }
+
+    public static function fromNestedArray(array $nestedArray) : self
+    {
+        return new self(self::flattenNestedArray($nestedArray));
     }
 
     public function merge(self $data) : self
@@ -24,102 +46,67 @@ final class Data
         return $newData;
     }
 
+    public function hasKey(string $key) : bool
+    {
+        return array_key_exists($key, $this->data);
+    }
+
     public function getValue(string $key, string $fallback = null) : string
     {
-        $value = $this->getNode($key);
+        if (array_key_exists($key, $this->data)) {
+            return $this->data[$key];
+        }
 
-        if (null === $value && null !== $value) {
+        if (null !== $fallback) {
             return $fallback;
         }
 
-        if (null === $value) {
-            // @todo thow exception
-        } elseif (!is_string($value)) {
-            // @todo throw exception
-        }
-
-        return $value;
+        throw Exception\NonExistentKey::fromNonExistentKey($key);
     }
 
     public function getIndexes(string $key) : array
     {
-        $node = $this->getNode($key);
+        return array_unique(
+            array_reduce(
+                array_keys($this->data),
+                function (array $indexes, string $currentKey) use ($key) {
+                    if (preg_match('(^' . preg_quote($key) . '\[(?<index>[^\]]+)\])', $currentKey, $matches)) {
+                        $indexes[] = $matches['index'];
+                    }
 
-        if (!is_array($node)) {
-            return [];
-        }
-
-        return array_keys($key);
+                    return $indexes;
+                },
+                []
+            )
+        );
     }
 
-    public function getValues(string $key) : array
+    private static function flattenNestedArray(array $nestedArray, string $prefix = '') : array
     {
-        $node = $this->getNode($key);
+        $flatArray = [];
 
-        if (!is_array($node)) {
-            return [];
-        }
+        foreach ($nestedArray as $key => $value) {
+            if (!is_string($key) && ('' === $prefix || !is_int($key))) {
+                throw InvalidKey::fromNonNestedKey($key);
+            }
 
-        $values = [];
+            if ('' !== $prefix) {
+                $key = $prefix . '[' . $key . ']';
+            }
 
-        foreach ($node as $key => $value) {
-            if (!is_string($value)) {
+            if (is_string($value)) {
+                $flatArray[$key] = $value;
                 continue;
-            }
-
-            $values[$key] = $value;
-        }
-
-        return $values;
-    }
-
-    /**
-     * @return array|string|null
-     */
-    private function getNode(string $key)
-    {
-        if (!preg_match('(^(?<head>\w+)(?<chilren>(?:\[\w+\]))*$)', $key, $matches)) {
-            // @todo throw exception
-        }
-
-        if (!array_key_exists($matches['head'], $this->data)) {
-            return null;
-        }
-
-        $currentNode = $this->data[$matches['head']];
-
-        if ('' === $matches['children']) {
-            return $currentNode;
-        }
-
-        $nodes = explode('][', trim($matches['children'], '[]'));
-
-        foreach ($nodes as $node) {
-            if (!array_key_exists($node, $currentNode)) {
-                return null;
-            }
-
-            $currentNode = $currentNode[$node];
-        }
-
-        return $currentNode;
-    }
-
-    private static function validateData(array $data)
-    {
-        foreach ($data as $key => $value) {
-            if (!is_string($key)) {
-                // @todo throw exception
             }
 
             if (is_array($value)) {
-                self::validateData($value);
+                $flatArray += self::flattenNestedArray($value, $key);
                 continue;
             }
 
-            if (!is_string($value)) {
-                // @todo throw exception
-            }
+            throw InvalidValue::fromNonNestedValue($value);
         }
+
+        return $flatArray;
     }
 }

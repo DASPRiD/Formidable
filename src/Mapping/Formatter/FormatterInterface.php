@@ -10,7 +10,7 @@ interface FormatterInterface
     /**
      * @return mixed
      */
-    public function bind(Data $data);
+    public function bind(string $key, Data $data);
 
     public function unbind(string $key, $value) : Data;
 }

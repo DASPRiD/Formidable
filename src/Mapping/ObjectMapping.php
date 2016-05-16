@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Mapping;
 
+use DASPRiD\Formidable\Data;
 use ReflectionClass;
 
 final class ObjectMapping implements MappingInterface
@@ -78,7 +79,7 @@ final class ObjectMapping implements MappingInterface
         return $data;
     }
 
-    public function withPrefixAndRelativeKey(string $prefix, string $relativeKey) : self
+    public function withPrefixAndRelativeKey(string $prefix, string $relativeKey) : MappingInterface
     {
         return new self(
             $this->mappings,

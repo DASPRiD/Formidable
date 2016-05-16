@@ -14,5 +14,5 @@ interface MappingInterface
 
     public function unbind($value) : Data;
 
-    public function withPrefixAndRelativeKey(string $prefix, string $relativeKey) : self;
+    public function withPrefixAndRelativeKey(string $prefix, string $relativeKey) : MappingInterface;
 }
