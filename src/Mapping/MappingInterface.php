@@ -7,10 +7,7 @@ use DASPRiD\Formidable\Data;
 
 interface MappingInterface
 {
-    /**
-     * @return mixed
-     */
-    public function bind(Data $data);
+    public function bind(Data $data) : BindResult;
 
     public function unbind($value) : Data;
 

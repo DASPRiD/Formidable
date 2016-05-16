@@ -4,6 +4,9 @@ declare(strict_types = 1);
 namespace DASPRiD\Formidable\Mapping\Formatter;
 
 use DASPRiD\Formidable\Data;
+use DASPRiD\Formidable\FormError\FormError;
+use DASPRiD\Formidable\FormError\FormErrorSequence;
+use DASPRiD\Formidable\Mapping\BindResult;
 
 final class IntegerFormatter implements FormatterInterface
 {
@@ -12,17 +15,23 @@ final class IntegerFormatter implements FormatterInterface
      */
     public function bind(string $key, Data $data) : int
     {
-        if (!$data->hasValue($key)) {
-            // @todo check if required
+        if (!$data->hasKey($key)) {
+            return BindResult::fromFormErrors(new FormErrorSequence(new FormError(
+                $key,
+                'missing.value'
+            )));
         }
 
         $value = $data->getValue($key);
 
         if (!preg_match('(^[1-9]\d*$)', $value)) {
-            // @todo validation error
+            return BindResult::fromFormErrors(new FormErrorSequence(new FormError(
+                $key,
+                'invalid.integer'
+            )));
         }
 
-        return (int) $data[$key];
+        return BindResult::fromValue((int) $data[$key]);
     }
 
     /**

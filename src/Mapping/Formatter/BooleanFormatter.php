@@ -4,23 +4,29 @@ declare(strict_types = 1);
 namespace DASPRiD\Formidable\Mapping\Formatter;
 
 use DASPRiD\Formidable\Data;
+use DASPRiD\Formidable\FormError\FormError;
+use DASPRiD\Formidable\FormError\FormErrorSequence;
+use DASPRiD\Formidable\Mapping\BindResult;
 
 final class BooleanFormatter implements FormatterInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function bind(string $key, Data $data) : bool
+    public function bind(string $key, Data $data) : BindResult
     {
         switch ($data->getValue($key, 'false')) {
             case 'true':
-                return true;
+                return BindResult::fromValue(true);
 
             case 'false':
-                return false;
+                return BindResult::fromValue(false);
         }
 
-        // @todo return invalid type error
+        return BindResult::fromFormErrors(new FormErrorSequence(new FormError(
+            $key,
+            'invalid.boolean'
+        )));
     }
 
     /**

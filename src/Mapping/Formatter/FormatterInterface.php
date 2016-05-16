@@ -4,13 +4,11 @@ declare(strict_types = 1);
 namespace DASPRiD\Formidable\Mapping\Formatter;
 
 use DASPRiD\Formidable\Data;
+use DASPRiD\Formidable\Mapping\BindResult;
 
 interface FormatterInterface
 {
-    /**
-     * @return mixed
-     */
-    public function bind(string $key, Data $data);
+    public function bind(string $key, Data $data) : BindResult;
 
     public function unbind(string $key, $value) : Data;
 }

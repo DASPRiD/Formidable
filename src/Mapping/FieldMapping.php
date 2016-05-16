@@ -43,7 +43,7 @@ final class FieldMapping implements MappingInterface
         return new self(new BooleanFormatter());
     }
 
-    public function bind(Data $data)
+    public function bind(Data $data) : BindResult
     {
         $this->binder->bind($data);
     }

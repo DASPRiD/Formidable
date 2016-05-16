@@ -46,7 +46,7 @@ final class ObjectMapping implements MappingInterface
         $this->key = $key;
     }
 
-    public function bind(Data $data)
+    public function bind(Data $data) : BindResult
     {
         $reflectionClass = new ReflectionClass($this->className);
         $reflectionMethod = $reflectionClass->getMethod('__construct');
@@ -57,11 +57,28 @@ final class ObjectMapping implements MappingInterface
             $arguments[$reflectionParameter->getName()] = null;
         }
 
+        $formErrors = new \DASPRiD\Formidable\FormError\FormErrorSequence([]);
+
         foreach ($this->mappings as $key => $mapping) {
+            $bindResult = $mapping->bind($data);
+
+            if (!$bindResult->isSuccess()) {
+                $formErrors = $formErrors->merge($bindResult->getFormErrors());
+                continue;
+            }
+
+            if (!array_key_exists($key, $arguments)) {
+                // @todo throw exception
+            }
+
             $arguments[$key] = $mapping->bind($data);
         }
 
-        return $reflectionClass->newInstance($arguments);
+        if (0 < count($formErrors)) {
+            return BindResult::fromFormErrors($formErrors);
+        }
+
+        return BindResult::fromValue($reflectionClass->newInstance($arguments));
     }
 
     public function unbind($value) : Data

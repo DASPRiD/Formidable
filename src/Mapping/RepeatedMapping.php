@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace DASPRiD\Formidable\Mapping;
 
 use DASPRiD\Formidable\Data;
-use ReflectionClass;
 
 final class RepeatedMapping implements MappingInterface
 {
@@ -28,17 +27,27 @@ final class RepeatedMapping implements MappingInterface
         $this->wrappedMapping = $wrappedMapping;
     }
 
-    public function bind(Data $data)
+    public function bind(Data $data) : BindResult
     {
         $values = [];
+        $formErrors = new \DASPRiD\Formidable\FormError\FormErrorSequence([]);
 
         foreach ($data->getIndexes($this->key) as $index) {
-            $values[] = $this->wrappedMapping
-                ->withPrefixAndRelativeKey($this->key . '[' . $index . ']')
-                ->bind($data);
+            $bindResult = $this->wrappedMapping->withPrefixAndRelativeKey($this->key . '[' . $index . ']')->bind($data);
+
+            if (!$bindResult->isSuccess()) {
+                $formErrors = $formErrors->merge($bindResult->getFormErrors());
+                continue;
+            }
+
+            $values[] = $bindResult->getValue();
         }
 
-        return $values;
+        if (0 < count($formErrors)) {
+            return BindResult::fromFormErrors($formErrors);
+        }
+
+        return BindResult::fromValue($values);
     }
 
     public function unbind($value) : Data

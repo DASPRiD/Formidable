@@ -12,8 +12,11 @@ final class TextFormatter implements FormatterInterface
      */
     public function bind(string $key, Data $data) : string
     {
-        if (!$data->hasValue($key)) {
-            // @todo check if required
+        if (!$data->hasKey($key)) {
+            return BindResult::fromFormErrors(new FormErrorSequence(new FormError(
+                $key,
+                'missing.value'
+            )));
         }
 
         return $data->getValue($key);
