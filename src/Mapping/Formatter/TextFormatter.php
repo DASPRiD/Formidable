@@ -23,7 +23,7 @@ final class TextFormatter implements FormatterInterface
             )));
         }
 
-        return $data->getValue($key);
+        return BindResult::fromValue((string) $data->getValue($key));
     }
 
     /**
@@ -35,6 +35,6 @@ final class TextFormatter implements FormatterInterface
             throw InvalidValue::fromNonString($value);
         }
 
-        return new Data([$key => $value]);
+        return Data::fromFlatArray([$key => $value]);
     }
 }
