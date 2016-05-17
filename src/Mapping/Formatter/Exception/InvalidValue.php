@@ -12,6 +12,11 @@ class InvalidValue extends DomainException implements ExceptionInterface
         return new self(sprintf('Expected boolean, but "%s" was provided', gettype($value)));
     }
 
+    public static function fromNonFloat($value)
+    {
+        return new self(sprintf('Expected float, but "%s" was provided', gettype($value)));
+    }
+
     public static function fromNonInteger($value)
     {
         return new self(sprintf('Expected integer, but "%s" was provided', gettype($value)));

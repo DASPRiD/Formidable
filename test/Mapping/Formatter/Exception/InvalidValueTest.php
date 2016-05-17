@@ -3,8 +3,6 @@ declare(strict_types = 1);
 
 namespace DASPRiD\FormidableTest\Mapping\Formatter\Exception;
 
-use DASPRiD\Formidable\Data;
-use DASPRiD\Formidable\Mapping\Formatter\BooleanFormatter;
 use DASPRiD\Formidable\Mapping\Formatter\Exception\InvalidValue;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -18,6 +16,14 @@ class InvalidValueTest extends TestCase
         $this->assertSame(
             'Expected boolean, but "string" was provided',
             InvalidValue::fromNonBoolean('foo')->getMessage()
+        );
+    }
+
+    public function testMessageFromNonFloat()
+    {
+        $this->assertSame(
+            'Expected float, but "string" was provided',
+            InvalidValue::fromNonFloat('foo')->getMessage()
         );
     }
 
