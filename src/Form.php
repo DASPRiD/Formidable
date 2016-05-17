@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable;
 
+use Assert\Assertion;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
 use DASPRiD\Formidable\Mapping\MappingInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -71,11 +72,13 @@ final class Form
 
     public function getValue()
     {
-        if (0 < count($this->errors)) {
-            // @todo throw exception
-        }
-
+        Assertion::notSame(0, count($this->errors), 'Value cannot be retrieved when the form has errors');
         return $this->formData;
+    }
+
+    public function hasErrors() : bool
+    {
+        return count($this->errors) > 0;
     }
 
     public function getField(string $key) : Field

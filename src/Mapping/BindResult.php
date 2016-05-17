@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Mapping;
 
+use Assert\Assertion;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
 
 final class BindResult
@@ -48,19 +49,13 @@ final class BindResult
      */
     public function getValue()
     {
-        if (null !== $this->formErrors) {
-            // @todo throw exception
-        }
-
+        Assertion::same(null, $this->formErrors);
         return $this->value;
     }
 
     public function getFormErrors() : FormErrorSequence
     {
-        if (null === $this->formErrors) {
-            // @todo throw exception
-        }
-
+        Assertion::notNull($this->formErrors);
         return $this->formErrors;
     }
 }

@@ -3,7 +3,9 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Mapping;
 
+use Assert\Assertion;
 use DASPRiD\Formidable\Data;
+use DASPRiD\Formidable\FormError\FormErrorSequence;
 use ReflectionClass;
 
 final class ObjectMapping implements MappingInterface
@@ -31,16 +33,13 @@ final class ObjectMapping implements MappingInterface
     public function __construct(array $mappings, $className, string $key = '')
     {
         foreach ($mappings as $mappingKey => $mapping) {
-            if (!is_string($key)) {
-                // @todo exception
-            }
+            Assertion::string($mappingKey);
+            Assertion::isInstanceOf($mapping, MappingInterface::class);
 
             $this->mappings[$mappingKey] = $mapping->withPrefixAndRelativeKey($key, $mappingKey);
         }
 
-        if (!class_exists($className)) {
-            // @todo exception
-        }
+        Assertion::classExists($className);
 
         $this->className = $className;
         $this->key = $key;
@@ -57,7 +56,7 @@ final class ObjectMapping implements MappingInterface
             $arguments[$reflectionParameter->getName()] = null;
         }
 
-        $formErrors = new \DASPRiD\Formidable\FormError\FormErrorSequence([]);
+        $formErrors = new FormErrorSequence([]);
 
         foreach ($this->mappings as $key => $mapping) {
             $bindResult = $mapping->bind($data);
@@ -67,10 +66,7 @@ final class ObjectMapping implements MappingInterface
                 continue;
             }
 
-            if (!array_key_exists($key, $arguments)) {
-                // @todo throw exception
-            }
-
+            Assertion::keyExists($arguments, $key);
             $arguments[$key] = $mapping->bind($data);
         }
 
@@ -78,15 +74,12 @@ final class ObjectMapping implements MappingInterface
             return BindResult::fromFormErrors($formErrors);
         }
 
-        return BindResult::fromValue($reflectionClass->newInstance($arguments));
+        return $this->applyConstraints($reflectionClass->newInstance($arguments));
     }
 
     public function unbind($value) : Data
     {
-        if (!$value instanceof $this->className) {
-            // @todo throw exception
-        }
-
+        Assertion::isInstanceOf($value, $this->className);
         $data = Data::fromFlatArray([]);
 
         foreach ($this->mappings as $mapping) {

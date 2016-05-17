@@ -47,7 +47,7 @@ final class RepeatedMapping implements MappingInterface
             return BindResult::fromFormErrors($formErrors);
         }
 
-        return BindResult::fromValue($values);
+        return $this->applyConstraints($values);
     }
 
     public function unbind($value) : Data

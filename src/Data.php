@@ -5,6 +5,7 @@ namespace DASPRiD\Formidable;
 
 use DASPRiD\Formidable\Exception\InvalidKey;
 use DASPRiD\Formidable\Exception\InvalidValue;
+use DASPRiD\Formidable\Exception\NonExistentKey;
 
 final class Data
 {
@@ -61,7 +62,7 @@ final class Data
             return $fallback;
         }
 
-        throw Exception\NonExistentKey::fromNonExistentKey($key);
+        throw NonExistentKey::fromNonExistentKey($key);
     }
 
     public function getIndexes(string $key) : array

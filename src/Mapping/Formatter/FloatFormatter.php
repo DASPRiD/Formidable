@@ -3,11 +3,11 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Mapping\Formatter;
 
+use Assert\Assertion;
 use DASPRiD\Formidable\Data;
 use DASPRiD\Formidable\FormError\FormError;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
 use DASPRiD\Formidable\Mapping\BindResult;
-use DASPRiD\Formidable\Mapping\Formatter\Exception\InvalidValue;
 
 final class FloatFormatter implements FormatterInterface
 {
@@ -40,10 +40,7 @@ final class FloatFormatter implements FormatterInterface
      */
     public function unbind(string $key, $value) : Data
     {
-        if (!is_float($value)) {
-            throw InvalidValue::fromNonFloat($value);
-        }
-
+        Assertion::float($value);
         return Data::fromFlatArray([$key => (string) $value]);
     }
 }

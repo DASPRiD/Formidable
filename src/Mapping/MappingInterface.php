@@ -12,4 +12,6 @@ interface MappingInterface
     public function unbind($value) : Data;
 
     public function withPrefixAndRelativeKey(string $prefix, string $relativeKey) : MappingInterface;
+
+    public function verifying(ConstraintInterface ...$constraints);
 }
