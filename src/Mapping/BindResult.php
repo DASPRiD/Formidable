@@ -49,13 +49,13 @@ final class BindResult
      */
     public function getValue()
     {
-        Assertion::same(null, $this->formErrors);
+        Assertion::same(null, $this->formErrors, 'Value can only be retrieved when bind result was successful');
         return $this->value;
     }
 
     public function getFormErrors() : FormErrorSequence
     {
-        Assertion::notNull($this->formErrors);
+        Assertion::notNull($this->formErrors, 'Form errors can only be retrieved when bind result was not successful');
         return $this->formErrors;
     }
 }

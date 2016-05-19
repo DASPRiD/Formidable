@@ -3,7 +3,9 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Mapping;
 
+use Assert\Assertion;
 use DASPRiD\Formidable\Data;
+use DASPRiD\Formidable\FormError\FormErrorSequence;
 
 final class RepeatedMapping implements MappingInterface
 {
@@ -30,7 +32,7 @@ final class RepeatedMapping implements MappingInterface
     public function bind(Data $data) : BindResult
     {
         $values = [];
-        $formErrors = new \DASPRiD\Formidable\FormError\FormErrorSequence([]);
+        $formErrors = new FormErrorSequence();
 
         foreach ($data->getIndexes($this->key) as $index) {
             $bindResult = $this->wrappedMapping->withPrefixAndRelativeKey($this->key . '[' . $index . ']')->bind($data);
@@ -52,10 +54,7 @@ final class RepeatedMapping implements MappingInterface
 
     public function unbind($value) : Data
     {
-        if (!is_array($value)) {
-            // @todo throw exception
-        }
-
+        Assertion::isArray($value);
         $data = new Data([]);
 
         foreach ($value as $individualValue) {
