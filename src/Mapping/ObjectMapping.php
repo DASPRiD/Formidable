@@ -81,9 +81,13 @@ final class ObjectMapping implements MappingInterface
     {
         Assertion::isInstanceOf($value, $this->className);
         $data = Data::fromFlatArray([]);
+        $reflectionClass = new ReflectionClass($this->className);
 
-        foreach ($this->mappings as $mapping) {
-            $data = $data->merge($mapping->unbind($value));
+        foreach ($this->mappings as $key => $mapping) {
+            $reflectionProperty = $reflectionClass->getProperty($key);
+            $reflectionProperty->setAccessible(true);
+
+            $data = $data->merge($mapping->unbind($reflectionProperty->getValue($value)));
         }
 
         return $data;

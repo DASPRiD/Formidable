@@ -3,7 +3,10 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Mapping;
 
+use DASPRiD\Formidable\FormError\FormError;
+use DASPRiD\Formidable\FormError\FormErrorSequence;
 use DASPRiD\Formidable\Mapping\Constraint\ConstraintInterface;
+use DASPRiD\Formidable\Mapping\Constraint\ValidationError;
 use DASPRiD\Formidable\Mapping\Constraint\ValidationResult;
 
 trait MappingTrait
@@ -20,7 +23,7 @@ trait MappingTrait
         return $mapping;
     }
 
-    protected function applyConstraints($value) : BindResult
+    protected function applyConstraints($value, string $key) : BindResult
     {
         $validationResult = new ValidationResult();
 
@@ -32,10 +35,12 @@ trait MappingTrait
             return BindResult::fromValue($value);
         }
 
-        return call_user_func_array(
-            [BindResult::class, 'fromFormErrors'],
+        return BindResult::fromFormErrors(new FormErrorSequence(...array_map(
+            function (ValidationError $validationError) use ($key) {
+                return new FormError($key, $validationError->getMessage(), $validationError->getArguments());
+            },
             iterator_to_array($validationResult->getValidationErrors())
-        );
+        )));
     }
 
     protected function createKeyFromPrefixAndRelativeKey(string $prefix, string $relativeKey) : string
