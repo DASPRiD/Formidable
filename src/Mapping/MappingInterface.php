@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace DASPRiD\Formidable\Mapping;
 
 use DASPRiD\Formidable\Data;
+use DASPRiD\Formidable\Mapping\Constraint\ConstraintInterface;
 
 interface MappingInterface
 {
