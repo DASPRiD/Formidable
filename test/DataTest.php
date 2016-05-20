@@ -50,6 +50,16 @@ class DataTest extends TestCase
         $this->assertSame('bat', $mergedData->getValue('baz'));
     }
 
+    public function testFilter()
+    {
+        $data = Data::fromFlatArray(['foo' => 'bar', 'baz' => 'bat'])->filter(function (string $value, string $key) {
+            return $key === 'baz';
+        });
+
+        $this->assertFalse($data->hasKey('foo'));
+        $this->assertTrue($data->hasKey('baz'));
+    }
+
     public function testCreateFromFlatArrayWithInvalidKey()
     {
         $this->expectException(InvalidKey::class);
@@ -118,5 +128,17 @@ class DataTest extends TestCase
         ]);
 
         $this->assertSame(['0', 'baz', '1'], $data->getIndexes('foo'));
+    }
+
+    public function testIsEmptyReturnsTrueWithoutData()
+    {
+        $data = Data::fromFlatArray([]);
+        $this->assertTrue($data->isEmpty());
+    }
+
+    public function testIsEmptyReturnsFalseWithData()
+    {
+        $data = Data::fromFlatArray(['foo' => 'bar']);
+        $this->assertFalse($data->isEmpty());
     }
 }
