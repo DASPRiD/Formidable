@@ -45,7 +45,7 @@ final class RepeatedMapping implements MappingInterface
             $values[] = $bindResult->getValue();
         }
 
-        if (0 < count($formErrors)) {
+        if (!$formErrors->isEmpty()) {
             return BindResult::fromFormErrors($formErrors);
         }
 

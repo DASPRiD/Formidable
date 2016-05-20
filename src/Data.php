@@ -47,6 +47,14 @@ final class Data
         return $newData;
     }
 
+    public function filter(callable $filter)
+    {
+        $newData = clone $this;
+        $newData->data = array_filter($newData->data, $filter, ARRAY_FILTER_USE_BOTH);
+
+        return $newData;
+    }
+
     public function hasKey(string $key) : bool
     {
         return array_key_exists($key, $this->data);
@@ -80,6 +88,11 @@ final class Data
                 []
             )
         );
+    }
+
+    public function isEmpty() : bool
+    {
+        return empty($this->data);
     }
 
     private static function flattenNestedArray(array $nestedArray, string $prefix = '') : array

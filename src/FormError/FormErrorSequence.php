@@ -3,11 +3,10 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\FormError;
 
-use Countable;
 use IteratorAggregate;
 use Traversable;
 
-final class FormErrorSequence implements Countable, IteratorAggregate
+final class FormErrorSequence implements IteratorAggregate
 {
     /**
      * @var FormError[]
@@ -31,9 +30,9 @@ final class FormErrorSequence implements Countable, IteratorAggregate
         }));
     }
 
-    public function count() : int
+    public function isEmpty() : bool
     {
-        return count($this->formErrors);
+        return empty($this->formErrors);
     }
 
     public function getIterator() : Traversable

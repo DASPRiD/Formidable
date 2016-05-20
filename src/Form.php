@@ -72,13 +72,13 @@ final class Form
 
     public function getValue()
     {
-        Assertion::notSame(0, count($this->errors), 'Value cannot be retrieved when the form has errors');
+        Assertion::true($this->errors->isEmpty(), 'Value cannot be retrieved when the form has errors');
         return $this->formData;
     }
 
     public function hasErrors() : bool
     {
-        return count($this->errors) > 0;
+        return !$this->errors->isEmpty();
     }
 
     public function getField(string $key) : Field

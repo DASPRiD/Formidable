@@ -15,18 +15,18 @@ final class Field
     /**
      * @var string
      */
-    private $fieldValue;
+    private $value;
 
     /**
-     * @var ValidationErrors
+     * @var FormErrorSequence
      */
-    private $fieldErrors;
+    private $errors;
 
-    public function __construct(string $key, string $fieldValue, FormErrorSequence $fieldErrors)
+    public function __construct(string $key, string $value, FormErrorSequence $errors)
     {
         $this->key = $key;
-        $this->fieldValue = $fieldValue;
-        $this->fieldErrors = $fieldErrors;
+        $this->value = $value;
+        $this->errors = $errors;
     }
 
     public function getKey() : string
@@ -34,13 +34,13 @@ final class Field
         return $this->key;
     }
 
-    public function getFieldValue() : string
+    public function getValue() : string
     {
-        return $this->fieldValue;
+        return $this->value;
     }
 
-    public function getFieldErrors() : FormErrorSequence
+    public function getErrors() : FormErrorSequence
     {
-        return $this->fieldErrors;
+        return $this->errors;
     }
 }

@@ -70,7 +70,7 @@ final class ObjectMapping implements MappingInterface
             $arguments[$key] = $mapping->bind($data);
         }
 
-        if (0 < count($formErrors)) {
+        if (!$formErrors->isEmpty()) {
             return BindResult::fromFormErrors($formErrors);
         }
 
