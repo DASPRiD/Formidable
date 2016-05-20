@@ -29,6 +29,9 @@ final class ValidationResult
         return $validationResult;
     }
 
+    /**
+     * @return ValidationError[]
+     */
     public function getValidationErrors() : Traversable
     {
         yield from $this->validationErrors;
