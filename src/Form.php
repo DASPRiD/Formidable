@@ -6,6 +6,7 @@ namespace DASPRiD\Formidable;
 use Assert\Assertion;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
 use DASPRiD\Formidable\Mapping\MappingInterface;
+use DASPRiD\Formidable\Transformer\TrimTransformer;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class Form
@@ -59,12 +60,16 @@ final class Form
         return $form;
     }
 
-    public function bindFromRequest(ServerRequestInterface $request) : self
+    public function bindFromRequest(ServerRequestInterface $request, bool $trimData = true) : self
     {
         if ('POST' === $request->getMethod()) {
             $data = Data::fromNestedArray($request->getParsedBody());
         } else {
             $data = Data::fromNestedArray($request->getQueryParams());
+        }
+
+        if ($trimData) {
+            $data = $data->transform(new TrimTransformer());
         }
 
         return $this->bind($data);

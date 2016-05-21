@@ -6,6 +6,7 @@ namespace DASPRiD\Formidable;
 use DASPRiD\Formidable\Exception\InvalidKey;
 use DASPRiD\Formidable\Exception\InvalidValue;
 use DASPRiD\Formidable\Exception\NonExistentKey;
+use DASPRiD\Formidable\Transformer\TransformerInterface;
 
 final class Data
 {
@@ -47,12 +48,23 @@ final class Data
         return $newData;
     }
 
-    public function filter(callable $filter)
+    public function filter(callable $filter) : self
     {
         $newData = clone $this;
         $newData->data = array_filter($newData->data, $filter, ARRAY_FILTER_USE_BOTH);
 
         return $newData;
+    }
+
+    public function transform(TransformerInterface $transformer) : self
+    {
+        $data = [];
+
+        foreach ($this->data as $key => $value) {
+            $data[$key] = $transformer($value, $key);
+        }
+
+        return new self($data);
     }
 
     public function hasKey(string $key) : bool
