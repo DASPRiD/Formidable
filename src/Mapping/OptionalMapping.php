@@ -3,9 +3,7 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Mapping;
 
-use Assert\Assertion;
 use DASPRiD\Formidable\Data;
-use DASPRiD\Formidable\FormError\FormErrorSequence;
 
 final class OptionalMapping implements MappingInterface
 {
@@ -21,9 +19,6 @@ final class OptionalMapping implements MappingInterface
      */
     private $key = '';
 
-    /**
-     * @param MappingInterface $wrappedMapping
-     */
     public function __construct(MappingInterface $wrappedMapping)
     {
         $this->wrappedMapping = $wrappedMapping;
@@ -42,16 +37,22 @@ final class OptionalMapping implements MappingInterface
 
             return true;
         })->isEmpty()) {
-            return $this->wrappedMapping->bind($data);
+            $bindResult = $this->wrappedMapping->bind($data);
+
+            if ($bindResult->isSuccess()) {
+                return $this->applyConstraints($bindResult->getValue(), $this->key);
+            }
+
+            return $bindResult;
         }
 
-        return BindResult::fromValue(null);
+        return $this->applyConstraints(null, $this->key);
     }
 
     public function unbind($value) : Data
     {
         if (null === $value) {
-            return new Data([]);
+            return Data::fromFlatArray([]);
         }
 
         return $this->wrappedMapping->unbind($value);

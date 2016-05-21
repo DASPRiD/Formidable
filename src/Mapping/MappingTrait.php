@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace DASPRiD\Formidable\Mapping;
 
 use DASPRiD\Formidable\FormError\FormError;
-use DASPRiD\Formidable\FormError\FormErrorSequence;
 use DASPRiD\Formidable\Mapping\Constraint\ConstraintInterface;
 use DASPRiD\Formidable\Mapping\Constraint\ValidationError;
 use DASPRiD\Formidable\Mapping\Constraint\ValidationResult;
