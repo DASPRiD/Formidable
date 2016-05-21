@@ -67,6 +67,6 @@ final class BindResult
             $this->formErrorSequence,
             'Form errors can only be retrieved when bind result was not successful'
         );
-        return $this->formErrors;
+        return $this->formErrorSequence;
     }
 }
