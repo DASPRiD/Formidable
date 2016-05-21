@@ -6,7 +6,6 @@ namespace DASPRiD\Formidable\Mapping\Formatter;
 use Assert\Assertion;
 use DASPRiD\Formidable\Data;
 use DASPRiD\Formidable\FormError\FormError;
-use DASPRiD\Formidable\FormError\FormErrorSequence;
 use DASPRiD\Formidable\Mapping\BindResult;
 
 final class BooleanFormatter implements FormatterInterface
@@ -24,10 +23,10 @@ final class BooleanFormatter implements FormatterInterface
                 return BindResult::fromValue(false);
         }
 
-        return BindResult::fromFormErrors(new FormErrorSequence(new FormError(
+        return BindResult::fromFormErrors(new FormError(
             $key,
             'error.boolean'
-        )));
+        ));
     }
 
     /**

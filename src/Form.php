@@ -54,7 +54,7 @@ final class Form
         if ($bindResult->isSuccess()) {
             $form->value = $bindResult->getValue();
         } else {
-            $form->errors = $bindResult->getFormErrors();
+            $form->errors = $bindResult->getFormErrorSequence();
         }
 
         return $form;

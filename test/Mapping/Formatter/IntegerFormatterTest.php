@@ -33,9 +33,9 @@ class IntegerFormatterTest extends TestCase
     {
         $bindResult = (new IntegerFormatter())->bind('foo', Data::fromFlatArray(['foo' => '1.1']));
         $this->assertFalse($bindResult->isSuccess());
-        $this->assertCount(1, $bindResult->getFormErrors());
+        $this->assertCount(1, $bindResult->getFormErrorSequence());
 
-        $error = iterator_to_array($bindResult->getFormErrors())[0];
+        $error = iterator_to_array($bindResult->getFormErrorSequence())[0];
         $this->assertSame('foo', $error->getKey());
         $this->assertSame('error.integer', $error->getMessage());
     }
@@ -44,9 +44,9 @@ class IntegerFormatterTest extends TestCase
     {
         $bindResult = (new IntegerFormatter())->bind('foo', Data::fromFlatArray(['foo' => '']));
         $this->assertFalse($bindResult->isSuccess());
-        $this->assertCount(1, $bindResult->getFormErrors());
+        $this->assertCount(1, $bindResult->getFormErrorSequence());
 
-        $error = iterator_to_array($bindResult->getFormErrors())[0];
+        $error = iterator_to_array($bindResult->getFormErrorSequence())[0];
         $this->assertSame('foo', $error->getKey());
         $this->assertSame('error.integer', $error->getMessage());
     }
@@ -55,9 +55,9 @@ class IntegerFormatterTest extends TestCase
     {
         $bindResult = (new IntegerFormatter())->bind('foo', Data::fromFlatArray([]));
         $this->assertFalse($bindResult->isSuccess());
-        $this->assertCount(1, $bindResult->getFormErrors());
+        $this->assertCount(1, $bindResult->getFormErrorSequence());
 
-        $error = iterator_to_array($bindResult->getFormErrors())[0];
+        $error = iterator_to_array($bindResult->getFormErrorSequence())[0];
         $this->assertSame('foo', $error->getKey());
         $this->assertSame('error.required', $error->getMessage());
     }

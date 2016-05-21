@@ -56,13 +56,13 @@ final class ObjectMapping implements MappingInterface
             $arguments[$reflectionParameter->getName()] = null;
         }
 
-        $formErrors = new FormErrorSequence([]);
+        $formErrorSequence = new FormErrorSequence();
 
         foreach ($this->mappings as $key => $mapping) {
             $bindResult = $mapping->bind($data);
 
             if (!$bindResult->isSuccess()) {
-                $formErrors = $formErrors->merge($bindResult->getFormErrors());
+                $formErrorSequence = $formErrorSequence->merge($bindResult->getFormErrorSequence());
                 continue;
             }
 
@@ -70,8 +70,8 @@ final class ObjectMapping implements MappingInterface
             $arguments[$key] = $mapping->bind($data);
         }
 
-        if (!$formErrors->isEmpty()) {
-            return BindResult::fromFormErrors($formErrors);
+        if (!$formErrorSequence->isEmpty()) {
+            return BindResult::fromFormErrorSequence($formErrorSequence);
         }
 
         return $this->applyConstraints($reflectionClass->newInstance($arguments));

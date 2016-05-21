@@ -35,12 +35,12 @@ trait MappingTrait
             return BindResult::fromValue($value);
         }
 
-        return BindResult::fromFormErrors(new FormErrorSequence(...array_map(
+        return BindResult::fromFormErrors(...array_map(
             function (ValidationError $validationError) use ($key) {
                 return new FormError($key, $validationError->getMessage(), $validationError->getArguments());
             },
             iterator_to_array($validationResult->getValidationErrors())
-        )));
+        ));
     }
 
     protected function createKeyFromPrefixAndRelativeKey(string $prefix, string $relativeKey) : string

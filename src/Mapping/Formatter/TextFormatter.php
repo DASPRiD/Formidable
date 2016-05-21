@@ -6,7 +6,6 @@ namespace DASPRiD\Formidable\Mapping\Formatter;
 use Assert\Assertion;
 use DASPRiD\Formidable\Data;
 use DASPRiD\Formidable\FormError\FormError;
-use DASPRiD\Formidable\FormError\FormErrorSequence;
 use DASPRiD\Formidable\Mapping\BindResult;
 
 final class TextFormatter implements FormatterInterface
@@ -17,13 +16,13 @@ final class TextFormatter implements FormatterInterface
     public function bind(string $key, Data $data) : BindResult
     {
         if (!$data->hasKey($key)) {
-            return BindResult::fromFormErrors(new FormErrorSequence(new FormError(
+            return BindResult::fromFormErrors(new FormError(
                 $key,
                 'error.required'
-            )));
+            ));
         }
 
-        return BindResult::fromValue((string) $data->getValue($key));
+        return BindResult::fromValue($data->getValue($key));
     }
 
     /**

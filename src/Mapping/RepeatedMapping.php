@@ -32,21 +32,21 @@ final class RepeatedMapping implements MappingInterface
     public function bind(Data $data) : BindResult
     {
         $values = [];
-        $formErrors = new FormErrorSequence();
+        $formErrorSequence = new FormErrorSequence();
 
         foreach ($data->getIndexes($this->key) as $index) {
             $bindResult = $this->wrappedMapping->withPrefixAndRelativeKey($this->key . '[' . $index . ']')->bind($data);
 
             if (!$bindResult->isSuccess()) {
-                $formErrors = $formErrors->merge($bindResult->getFormErrors());
+                $formErrorSequence = $formErrorSequence->merge($bindResult->getFormErrorSequence());
                 continue;
             }
 
             $values[] = $bindResult->getValue();
         }
 
-        if (!$formErrors->isEmpty()) {
-            return BindResult::fromFormErrors($formErrors);
+        if (!$formErrorSequence->isEmpty()) {
+            return BindResult::fromFormErrorSequence($formErrorSequence);
         }
 
         return $this->applyConstraints($values);

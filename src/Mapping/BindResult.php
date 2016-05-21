@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace DASPRiD\Formidable\Mapping;
 
 use Assert\Assertion;
+use DASPRiD\Formidable\FormError\FormError;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
 
 final class BindResult
@@ -16,7 +17,7 @@ final class BindResult
     /**
      * @var FormErrorSequence
      */
-    private $formErrors;
+    private $formErrorSequence;
 
     private function __construct()
     {
@@ -32,10 +33,17 @@ final class BindResult
         return $bindResult;
     }
 
-    public static function fromFormErrors(FormErrorSequence $formErrors)
+    public static function fromFormErrors(FormError ...$formErrors)
     {
         $bindResult = new self();
-        $bindResult->formErrors = $formErrors;
+        $bindResult->formErrorSequence = new FormErrorSequence(...$formErrors);
+        return $bindResult;
+    }
+
+    public static function fromFormErrorSequence(FormErrorSequence $formErrorSequence)
+    {
+        $bindResult = new self();
+        $bindResult->formErrorSequence = $formErrorSequence;
         return $bindResult;
     }
 
@@ -53,7 +61,7 @@ final class BindResult
         return $this->value;
     }
 
-    public function getFormErrors() : FormErrorSequence
+    public function getFormErrorSequence() : FormErrorSequence
     {
         Assertion::notNull($this->formErrors, 'Form errors can only be retrieved when bind result was not successful');
         return $this->formErrors;
