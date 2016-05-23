@@ -25,7 +25,7 @@ class ValidationResultTest extends TestCase
     public function testValidationErrorsRetrieval()
     {
         $validationResult = new ValidationResult(new ValidationError('foo'), new ValidationError('bar'));
-        ValidationErrorAssertion::assertErrorMessages($this, $validationResult, ['foo', 'bar']);
+        ValidationErrorAssertion::assertErrorMessages($this, $validationResult, ['foo' => [], 'bar' => []]);
     }
 
     public function testMerge()
@@ -36,6 +36,10 @@ class ValidationResultTest extends TestCase
 
         $validationResult = $validationResultA->merge($validationResultB)->merge($validationResultC);
         $this->assertFalse($validationResult->isSuccess());
-        ValidationErrorAssertion::assertErrorMessages($this, $validationResult, ['foo', 'bar', 'baz']);
+        ValidationErrorAssertion::assertErrorMessages(
+            $this,
+            $validationResult,
+            ['foo' => [], 'bar' => [], 'baz' => []]
+        );
     }
 }

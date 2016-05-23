@@ -4,10 +4,7 @@ declare(strict_types = 1);
 namespace DASPRiD\Formidable\Mapping;
 
 use DASPRiD\Formidable\Data;
-use DASPRiD\Formidable\Mapping\Formatter\BooleanFormatter;
 use DASPRiD\Formidable\Mapping\Formatter\FormatterInterface;
-use DASPRiD\Formidable\Mapping\Formatter\IntegerFormatter;
-use DASPRiD\Formidable\Mapping\Formatter\TextFormatter;
 
 final class FieldMapping implements MappingInterface
 {
@@ -28,24 +25,9 @@ final class FieldMapping implements MappingInterface
         $this->binder = $binder;
     }
 
-    public static function text() : self
-    {
-        return new self(new TextFormatter());
-    }
-
-    public static function integer() : self
-    {
-        return new self(new IntegerFormatter());
-    }
-
-    public static function boolean() : self
-    {
-        return new self(new BooleanFormatter());
-    }
-
     public function bind(Data $data) : BindResult
     {
-        $bindResult = $this->applyConstraints($this->binder->bind($this->key, $data));
+        $bindResult = $this->binder->bind($this->key, $data);
 
         if (!$bindResult->isSuccess()) {
             return $bindResult;

@@ -16,7 +16,7 @@ class ValidationErrorAssertion
         $actualMessages = [];
 
         foreach ($validationResult->getValidationErrors() as $validationError) {
-            $actualMessages[] = $validationError->getMessage();
+            $actualMessages[$validationError->getMessage()] = $validationError->getArguments();
         }
 
         $testCase->assertSame($expectedMessages, $actualMessages);
