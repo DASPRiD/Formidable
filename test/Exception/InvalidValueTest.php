@@ -13,7 +13,10 @@ class InvalidValueTest extends TestCase
 {
     public function testFromArrayWithNonStringKeys()
     {
-        $this->assertSame('Non-string value in array found', InvalidValue::fromArrayWithNonStringValues([])->getMessage());
+        $this->assertSame(
+            'Non-string value in array found',
+            InvalidValue::fromArrayWithNonStringValues([])->getMessage()
+        );
     }
 
     public function testFromNonNestedKey()
