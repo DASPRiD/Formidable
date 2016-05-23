@@ -7,9 +7,7 @@ use DASPRiD\Formidable\Data;
 use DASPRiD\Formidable\Exception\InvalidKey;
 use DASPRiD\Formidable\Exception\InvalidValue;
 use DASPRiD\Formidable\Exception\NonExistentKey;
-use DASPRiD\Formidable\Transformer\CallbackTransformer;
 use DASPRiD\Formidable\Transformer\TransformerInterface;
-use DASPRiD\Formidable\Transformer\TrimTransformer;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
