@@ -43,4 +43,9 @@ final class Field
     {
         return $this->errors;
     }
+
+    public function hasErrors() : bool
+    {
+        return !$this->errors->isEmpty();
+    }
 }

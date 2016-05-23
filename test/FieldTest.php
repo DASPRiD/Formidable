@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace DASPRiD\FormidableTest;
 
 use DASPRiD\Formidable\Field;
+use DASPRiD\Formidable\FormError\FormError;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -29,5 +30,19 @@ class FieldTest extends TestCase
         $errors = new FormErrorSequence();
         $field = new Field('', '', $errors);
         $this->assertSame($errors, $field->getErrors());
+    }
+
+    public function testHasErrorsReturnsFalseWithoutErrors()
+    {
+        $errors = new FormErrorSequence();
+        $field = new Field('', '', $errors);
+        $this->assertFalse($field->hasErrors());
+    }
+
+    public function testHasErrorsReturnsTrueWithErrors()
+    {
+        $errors = new FormErrorSequence(new FormError('', ''));
+        $field = new Field('', '', $errors);
+        $this->assertTrue($field->hasErrors());
     }
 }

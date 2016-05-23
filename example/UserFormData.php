@@ -24,4 +24,19 @@ final class UserFormData
         $this->address = $address;
         $this->groupIds = $groupIds;
     }
+
+    public function getName() : string
+    {
+        return $this->name;
+    }
+
+    public function getAddress() : AddressFormData
+    {
+        return $this->address;
+    }
+
+    public function getGroupIds() : array
+    {
+        return $this->groupIds;
+    }
 }
