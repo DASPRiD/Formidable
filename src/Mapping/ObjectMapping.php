@@ -15,7 +15,7 @@ final class ObjectMapping implements MappingInterface
     /**
      * @var array
      */
-    private $mappings;
+    private $mappings = [];
 
     /**
      * @var string
@@ -67,14 +67,14 @@ final class ObjectMapping implements MappingInterface
             }
 
             Assertion::keyExists($arguments, $key);
-            $arguments[$key] = $mapping->bind($data);
+            $arguments[$key] = $bindResult->getValue();
         }
 
         if (!$formErrorSequence->isEmpty()) {
             return BindResult::fromFormErrorSequence($formErrorSequence);
         }
 
-        return $this->applyConstraints($reflectionClass->newInstance($arguments));
+        return $this->applyConstraints($reflectionClass->newInstance(...array_values($arguments)), $this->key);
     }
 
     public function unbind($value) : Data

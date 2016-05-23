@@ -15,7 +15,7 @@ trait MappingTrait
      */
     private $constraints = [];
 
-    public function verifying(ConstraintInterface ...$constraints)
+    public function verifying(ConstraintInterface ...$constraints) : MappingInterface
     {
         $mapping = clone $this;
         $mapping->constraints = array_merge($this->constraints, $constraints);

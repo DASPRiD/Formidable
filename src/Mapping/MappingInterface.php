@@ -14,5 +14,5 @@ interface MappingInterface
 
     public function withPrefixAndRelativeKey(string $prefix, string $relativeKey) : MappingInterface;
 
-    public function verifying(ConstraintInterface ...$constraints);
+    public function verifying(ConstraintInterface ...$constraints) : MappingInterface;
 }
