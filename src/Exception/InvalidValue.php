@@ -14,6 +14,6 @@ class InvalidValue extends DomainException implements ExceptionInterface
 
     public static function fromNonNestedValue($value)
     {
-        return new self(sprintf('Expected string or array value, but "%s" provided', gettype($value)));
+        return new self(sprintf('Expected string or array value, but "%s" was provided', gettype($value)));
     }
 }

@@ -20,6 +20,10 @@ final class Data
         $this->data = $data;
     }
 
+    /**
+     * @throws InvalidKey When a non-string key is encountered
+     * @throws InvalidValue When a non-string value is encountered
+     */
     public static function fromFlatArray(array $flatArray) : self
     {
         $originalCount = count($flatArray);
@@ -72,6 +76,9 @@ final class Data
         return array_key_exists($key, $this->data);
     }
 
+    /**
+     * @throws NonExistentKey When the key cannot be found and no fallback is defined
+     */
     public function getValue(string $key, string $fallback = null) : string
     {
         if (array_key_exists($key, $this->data)) {
@@ -107,6 +114,10 @@ final class Data
         return empty($this->data);
     }
 
+    /**
+     * @throws InvalidKey When an invalid key is encountered
+     * @throws InvalidValue When an invalid value is encountered
+     */
     private static function flattenNestedArray(array $nestedArray, string $prefix = '') : array
     {
         $flatArray = [];
