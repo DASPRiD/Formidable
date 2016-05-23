@@ -8,6 +8,7 @@ use DASPRiD\Formidable\Exception\InvalidKey;
 use DASPRiD\Formidable\Exception\InvalidValue;
 use DASPRiD\Formidable\Exception\NonExistentKey;
 use DASPRiD\Formidable\Transformer\CallbackTransformer;
+use DASPRiD\Formidable\Transformer\TransformerInterface;
 use DASPRiD\Formidable\Transformer\TrimTransformer;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -62,34 +63,19 @@ class DataTest extends TestCase
         $this->assertTrue($data->hasKey('baz'));
     }
 
-    public function testTransformWithTrim()
+    public function testTransform()
     {
+        $transformer = $this->prophesize(TransformerInterface::class);
+        $transformer->__invoke(' bar ', 'foo')->willReturn('bar');
+        $transformer->__invoke(' bat ', 'baz')->willReturn(' bat');
+
         $data = Data::fromFlatArray([
             'foo' => ' bar ',
             'baz' => ' bat ',
-        ])->transform(new TrimTransformer());
+        ])->transform($transformer->reveal());
 
         $this->assertSame('bar', $data->getValue('foo'));
-        $this->assertSame('bat', $data->getValue('baz'));
-    }
-
-    public function testTransformWithCustomFunction()
-    {
-        $data = Data::fromFlatArray([
-            'foo' => ' bar ',
-            'baz' => ' bat ',
-        ])->transform(new CallbackTransformer(function (string $value, string $key) {
-            if ('foo' === $key) {
-                return trim($value);
-            }
-
-            if ('baz' === $key) {
-                return '.' . trim($value);
-            }
-        }));
-
-        $this->assertSame('bar', $data->getValue('foo'));
-        $this->assertSame('.bat', $data->getValue('baz'));
+        $this->assertSame(' bat', $data->getValue('baz'));
     }
 
     public function testCreateFromFlatArrayWithInvalidKey()
