@@ -80,7 +80,7 @@ final class ObjectMapping implements MappingInterface
     public function unbind($value) : Data
     {
         Assertion::isInstanceOf($value, $this->className);
-        $data = Data::fromFlatArray([]);
+        $data = Data::none();
         $reflectionClass = new ReflectionClass($this->className);
 
         foreach ($this->mappings as $key => $mapping) {

@@ -19,7 +19,7 @@ final class Form
     /**
      * @var Data
      */
-    private $data = [];
+    private $data;
 
     /**
      * @var mixed
@@ -34,6 +34,8 @@ final class Form
     public function __construct(MappingInterface $mapping)
     {
         $this->mapping = $mapping;
+        $this->data = Data::none();
+        $this->errors = new FormErrorSequence();
     }
 
     public function fill($formData) : self

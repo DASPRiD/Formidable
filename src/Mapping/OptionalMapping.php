@@ -52,7 +52,7 @@ final class OptionalMapping implements MappingInterface
     public function unbind($value) : Data
     {
         if (null === $value) {
-            return Data::fromFlatArray([]);
+            return Data::none();
         }
 
         return $this->wrappedMapping->unbind($value);

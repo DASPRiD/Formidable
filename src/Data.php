@@ -20,6 +20,11 @@ final class Data
         $this->data = $data;
     }
 
+    public static function none() : self
+    {
+        return new self([]);
+    }
+
     /**
      * @throws InvalidKey When a non-string key is encountered
      * @throws InvalidValue When a non-string value is encountered

@@ -23,14 +23,14 @@ class DataTest extends TestCase
 
     public function testGetValueReturnsFallbackWhenKeyDoesNotExist()
     {
-        $data = Data::fromFlatArray([]);
+        $data = Data::none();
         $this->assertSame('bar', $data->getValue('foo', 'bar'));
     }
 
     public function testGetValueThrowsExceptionWithoutFallback()
     {
         $this->expectException(NonExistentKey::class);
-        $data = Data::fromFlatArray([]);
+        $data = Data::none();
         $data->getValue('foo');
     }
 
@@ -74,6 +74,12 @@ class DataTest extends TestCase
 
         $this->assertSame('bar', $data->getValue('foo'));
         $this->assertSame(' bat', $data->getValue('baz'));
+    }
+
+    public function testCreateNoneData()
+    {
+        $data = Data::none();
+        $this->assertAttributeSame([], 'data', $data);
     }
 
     public function testCreateFromFlatArrayWithInvalidKey()
@@ -148,7 +154,7 @@ class DataTest extends TestCase
 
     public function testIsEmptyReturnsTrueWithoutData()
     {
-        $data = Data::fromFlatArray([]);
+        $data = Data::none();
         $this->assertTrue($data->isEmpty());
     }
 

@@ -55,7 +55,7 @@ final class RepeatedMapping implements MappingInterface
     public function unbind($value) : Data
     {
         Assertion::isArray($value);
-        $data = Data::fromFlatArray([]);
+        $data = Data::none();
 
         foreach ($value as $index => $individualValue) {
             $data = $data->merge(
