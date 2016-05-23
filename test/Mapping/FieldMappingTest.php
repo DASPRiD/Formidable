@@ -10,6 +10,7 @@ use DASPRiD\Formidable\Mapping\Constraint\ValidationError;
 use DASPRiD\Formidable\Mapping\Constraint\ValidationResult;
 use DASPRiD\Formidable\Mapping\FieldMapping;
 use DASPRiD\Formidable\Mapping\Formatter\FormatterInterface;
+use DASPRiD\Formidable\Mapping\MappingInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
@@ -48,10 +49,9 @@ class FieldMappingTest extends TestCase
     public function testBindAppliesConstraints()
     {
         $data = Data::fromFlatArray(['foo' => 'bar']);
-        $bindResult = BindResult::fromValue('bar');
 
         $binder = $this->prophesize(FormatterInterface::class);
-        $binder->bind('foo', $data)->willReturn($bindResult);
+        $binder->bind('foo', $data)->willReturn(BindResult::fromValue('bar'));
 
         $constraint = $this->prophesize(ConstraintInterface::class);
         $constraint->__invoke('bar')->willReturn(new ValidationResult(new ValidationError('bar')));
@@ -59,7 +59,9 @@ class FieldMappingTest extends TestCase
         $mapping = (new FieldMapping($binder->reveal()))->withPrefixAndRelativeKey('', 'foo')->verifying(
             $constraint->reveal()
         );
-        $this->assertSame('bar', $mapping->bind($data)->getFormErrorSequence()->getIterator()->current()->getMessage());
+        $bindResult = $mapping->bind($data);
+        $this->assertFalse($bindResult->isSuccess());
+        $this->assertSame('bar', $bindResult->getFormErrorSequence()->getIterator()->current()->getMessage());
     }
 
     public function testUnbind()
@@ -79,5 +81,13 @@ class FieldMappingTest extends TestCase
 
         $mapping = (new FieldMapping($binder->reveal()))->withPrefixAndRelativeKey('foo', 'bar');
         $this->assertAttributeSame('foo[bar]', 'key', $mapping);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getInstanceForTraitTests() : MappingInterface
+    {
+        return new FieldMapping($this->prophesize(FormatterInterface::class)->reveal());
     }
 }

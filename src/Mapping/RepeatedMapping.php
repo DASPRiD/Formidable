@@ -35,7 +35,7 @@ final class RepeatedMapping implements MappingInterface
         $formErrorSequence = new FormErrorSequence();
 
         foreach ($data->getIndexes($this->key) as $index) {
-            $bindResult = $this->wrappedMapping->withPrefixAndRelativeKey($this->key . '[' . $index . ']')->bind($data);
+            $bindResult = $this->wrappedMapping->withPrefixAndRelativeKey($this->key, $index)->bind($data);
 
             if (!$bindResult->isSuccess()) {
                 $formErrorSequence = $formErrorSequence->merge($bindResult->getFormErrorSequence());
@@ -49,18 +49,18 @@ final class RepeatedMapping implements MappingInterface
             return BindResult::fromFormErrorSequence($formErrorSequence);
         }
 
-        return $this->applyConstraints($values);
+        return $this->applyConstraints($values, $this->key);
     }
 
     public function unbind($value) : Data
     {
         Assertion::isArray($value);
-        $data = new Data([]);
+        $data = Data::fromFlatArray([]);
 
-        foreach ($value as $individualValue) {
+        foreach ($value as $index => $individualValue) {
             $data = $data->merge(
                 $this->wrappedMapping
-                ->withPrefixAndRelativeKey($this->key . '[]')
+                ->withPrefixAndRelativeKey($this->key, (string) $index)
                 ->unbind($individualValue)
             );
         }

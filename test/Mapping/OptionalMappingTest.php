@@ -115,7 +115,9 @@ class OptionalMappingTest extends TestCase
         $mapping = (new OptionalMapping($wrappedMapping->reveal()))->verifying(
             $constraint->reveal()
         )->withPrefixAndRelativeKey('', 'foo');
-        $this->assertSame('bar', $mapping->bind($data)->getFormErrorSequence()->getIterator()->current()->getMessage());
+        $bindResult = $mapping->bind($data);
+        $this->assertFalse($bindResult->isSuccess());
+        $this->assertSame('bar', $bindResult->getFormErrorSequence()->getIterator()->current()->getMessage());
     }
 
     public function testUnbindNullValue()
@@ -143,5 +145,13 @@ class OptionalMappingTest extends TestCase
 
         $mapping = (new OptionalMapping($wrappedMapping->reveal()))->withPrefixAndRelativeKey('foo', 'bar');
         $this->assertAttributeSame('foo[bar]', 'key', $mapping);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getInstanceForTraitTests() : MappingInterface
+    {
+        return new OptionalMapping($this->prophesize(MappingInterface::class)->reveal());
     }
 }
