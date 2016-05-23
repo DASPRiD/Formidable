@@ -13,6 +13,9 @@ use DASPRiD\Formidable\Mapping\Formatter\TextFormatter;
 
 final class FieldMappingFactory
 {
+    /**
+     * @codeCoverageIgnore
+     */
     private function __construct()
     {
     }

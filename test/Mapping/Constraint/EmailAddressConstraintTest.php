@@ -24,7 +24,7 @@ class EmailAddressConstraintTest extends TestCase
         $constraint = new EmailAddressConstraint();
         $validationResult = $constraint('');
         $this->assertFalse($validationResult->isSuccess());
-        ValidationErrorAssertion::assertErrorMessages($this, $validationResult, ['error.email' => []]);
+        ValidationErrorAssertion::assertErrorMessages($this, $validationResult, ['error.email-address' => []]);
     }
 
     public function testFailureWithInvalidEmailAddress()
@@ -32,7 +32,7 @@ class EmailAddressConstraintTest extends TestCase
         $constraint = new EmailAddressConstraint();
         $validationResult = $constraint('foobar');
         $this->assertFalse($validationResult->isSuccess());
-        ValidationErrorAssertion::assertErrorMessages($this, $validationResult, ['error.email' => []]);
+        ValidationErrorAssertion::assertErrorMessages($this, $validationResult, ['error.email-address' => []]);
     }
 
     public function testSuccessWithValidEmailAddress()

@@ -12,7 +12,7 @@ class EmailAddressConstraint implements ConstraintInterface
         Assertion::string($value);
 
         if (false === filter_var($value, FILTER_VALIDATE_EMAIL)) {
-            return new ValidationResult(new ValidationError('error.email'));
+            return new ValidationResult(new ValidationError('error.email-address'));
         }
 
         return new ValidationResult();
