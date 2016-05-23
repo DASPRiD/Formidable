@@ -37,7 +37,7 @@ final class FormError
         return $this->message;
     }
 
-    public function getArguments() : arguments
+    public function getArguments() : array
     {
         return $this->arguments;
     }
