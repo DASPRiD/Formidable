@@ -33,7 +33,7 @@ final class FieldMapping implements MappingInterface
             return $bindResult;
         }
 
-        return $this->applyConstraints($bindResult->getValue());
+        return $this->applyConstraints($bindResult->getValue(), $this->key);
     }
 
     public function unbind($value) : Data
