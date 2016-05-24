@@ -20,7 +20,7 @@ final class ErrorList
         $this->errorFormatter = $errorFormatter;
     }
 
-    public function __invoke(FormErrorSequence $errors, array $htmlAttributes = [])
+    public function __invoke(FormErrorSequence $errors, array $htmlAttributes = []) : string
     {
         if ($errors->isEmpty()) {
             return '';
