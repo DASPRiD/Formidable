@@ -3,13 +3,14 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Helper;
 
-use Assert\Assertion;
 use DASPRiD\Formidable\FormError\FormError;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
 use DOMDocument;
 
 final class ErrorList
 {
+    use AttributeTrait;
+
     /**
      * @var ErrorFormatter
      */
@@ -30,13 +31,7 @@ final class ErrorList
         $document = new DOMDocument('1.0', 'utf-8');
         $list = $document->createElement('ul');
         $document->appendChild($list);
-
-        foreach ($htmlAttributes as $key => $value) {
-            Assertion::string($key);
-            Assertion::string($value);
-
-            $list->setAttribute($key, $value);
-        }
+        $this->addAttributes($list, $htmlAttributes);
 
         foreach ($errors as $error) {
             /* @var $error FormError */

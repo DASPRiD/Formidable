@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace DASPRiD\FormidableTest;
 
+use DASPRiD\Formidable\Data;
 use DASPRiD\Formidable\Field;
 use DASPRiD\Formidable\FormError\FormError;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
@@ -15,34 +16,45 @@ class FieldTest extends TestCase
 {
     public function testKeyRetrieval()
     {
-        $field = new Field('foo', '', new FormErrorSequence());
+        $field = new Field('foo', '', new FormErrorSequence(), Data::none());
         $this->assertSame('foo', $field->getKey());
     }
 
     public function testValueRetrieval()
     {
-        $field = new Field('', 'foo', new FormErrorSequence());
+        $field = new Field('', 'foo', new FormErrorSequence(), Data::none());
         $this->assertSame('foo', $field->getValue());
     }
 
     public function testErrorRetrieval()
     {
         $errors = new FormErrorSequence();
-        $field = new Field('', '', $errors);
+        $field = new Field('', '', $errors, Data::none());
         $this->assertSame($errors, $field->getErrors());
     }
 
     public function testHasErrorsReturnsFalseWithoutErrors()
     {
         $errors = new FormErrorSequence();
-        $field = new Field('', '', $errors);
+        $field = new Field('', '', $errors, Data::none());
         $this->assertFalse($field->hasErrors());
     }
 
     public function testHasErrorsReturnsTrueWithErrors()
     {
         $errors = new FormErrorSequence(new FormError('', ''));
-        $field = new Field('', '', $errors);
+        $field = new Field('', '', $errors, Data::none());
         $this->assertTrue($field->hasErrors());
+    }
+
+    public function testGetNestedValues()
+    {
+        $field = new Field('foo', '', new FormErrorSequence(), Data::fromFlatArray([
+            'foo[0]' => 'bar0',
+            'foo[1]' => 'bar1',
+            'foo[1][baz]' => 'bar2',
+        ]));
+
+        $this->assertSame(['bar0', 'bar1'], $field->getNestedValues());
     }
 }

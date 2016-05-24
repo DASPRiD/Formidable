@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace DASPRiD\FormidableTest;
+namespace DASPRiD\FormidableTest\Helper;
 
 use DASPRiD\Formidable\Helper\ErrorFormatter;
 use DASPRiD\Formidable\Helper\Exception\NonExistentMessage;

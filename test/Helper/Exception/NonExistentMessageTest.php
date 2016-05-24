@@ -9,7 +9,7 @@ use PHPUnit_Framework_TestCase as TestCase;
 /**
  * @covers DASPRiD\Formidable\Helper\Exception\NonExistentMessage
  */
-class NonExistentKeyTest extends TestCase
+class NonExistentMessageTest extends TestCase
 {
     public function testFromNonExistentMessageKey()
     {

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace DASPRiD\FormidableTest;
+namespace DASPRiD\FormidableTest\Helper;
 
 use Assert\AssertionFailedException;
 use DASPRiD\Formidable\FormError\FormError;
@@ -12,6 +12,7 @@ use PHPUnit_Framework_TestCase as TestCase;
 
 /**
  * @covers DASPRiD\Formidable\Helper\ErrorList
+ * @covers DASPRiD\Formidable\Helper\AttributeTrait
  */
 class ErrorListTest extends TestCase
 {

@@ -116,7 +116,8 @@ final class Form
         return new Field(
             $key,
             $this->data->getValue($key, ''),
-            $this->errors->collect($key)
+            $this->errors->collect($key),
+            $this->data
         );
     }
 }

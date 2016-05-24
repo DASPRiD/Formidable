@@ -22,11 +22,17 @@ final class Field
      */
     private $errors;
 
-    public function __construct(string $key, string $value, FormErrorSequence $errors)
+    /**
+     * @var Data
+     */
+    private $data;
+
+    public function __construct(string $key, string $value, FormErrorSequence $errors, Data $data)
     {
         $this->key = $key;
         $this->value = $value;
         $this->errors = $errors;
+        $this->data = $data;
     }
 
     public function getKey() : string
@@ -47,5 +53,23 @@ final class Field
     public function hasErrors() : bool
     {
         return !$this->errors->isEmpty();
+    }
+
+    /**
+     * @return array[]
+     */
+    public function getNestedValues() : array
+    {
+        $values = [];
+
+        foreach ($this->data->getIndexes($this->key) as $index) {
+            $key = $this->key . '[' . $index . ']';
+
+            if ($this->data->hasKey($key)) {
+                $values[] = $this->data->getValue($key);
+            }
+        }
+
+        return $values;
     }
 }
