@@ -1,0 +1,10 @@
+site_name: Formidable
+repo_url: https://github.com/DASPRiD/Formidable/
+copyright: Copyright (c) 2016 Ben Scholzen 'DASPRiD'
+docs_dir: doc/src
+site_dir: doc/html
+theme: readthedocs
+pages:
+    - index.md
+    - 'Getting Started' : getting-started.md
+    

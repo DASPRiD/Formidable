@@ -7,5 +7,25 @@ Formidable is an **almost completely** strictly typed form library for PHP 7. Wh
 generics in PHP still, which would be the requirement to make it completely strictly typed. As soon as those are
 available, Formidable will be updated accordingly.
 
+## Installation
+
+Install via composer:
+
+```bash
+$ composer require dasprid/formidable
+```
+
+## Documentation
+
+Documentation builds are available at:
+
+- https://formidable.readthedocs.org
+
+You can also build the documentation locally via [MkDocs](http://www.mkdocs.org):
+
+```bash
+$ mkdocs serve
+```
+
 ## Acknowledgment
 A huge thanks goes out to [Soliant](http://soliantconsulting.com/) for sponsoring the development of this library!

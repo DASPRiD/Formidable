@@ -18,12 +18,18 @@
         "psr-7"
     ],
     "require": {
+        "php": "7.0",
+        "ext-iconv": "*",
         "psr/http-message": "^1.0",
         "beberlei/assert": "^2.5"
     },
     "require-dev": {
+        "ext-intl": "*",
         "phpunit/phpunit": "^5.3",
         "squizlabs/php_codesniffer": "^2.6"
+    },
+    "suggest": {
+        "ext-intl": "Allows using the built-in error formatter helper"
     },
     "autoload": {
         "psr-4": {

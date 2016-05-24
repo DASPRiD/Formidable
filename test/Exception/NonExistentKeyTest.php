@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace DASPRiD\FormidableTest\FormError;
+namespace DASPRiD\FormidableTest\Exception;
 
 use DASPRiD\Formidable\Exception\NonExistentKey;
 use PHPUnit_Framework_TestCase as TestCase;
