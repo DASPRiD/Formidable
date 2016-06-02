@@ -30,23 +30,23 @@ final class PersonFormData
      * @var string
      */
     private $name;
-    
+
     /**
      * @var string
      */
     private $emailAddress;
-    
+
     public function __construct(string $name, string $emailAddress)
     {
         $this->name = $name;
         $this->emailAddress = $emailAddress;
     }
-    
+
     public function getName() : string
     {
         return $this->name;
     }
-    
+
     public function getEmailAddress() : string
     {
         return $this->emailAddress;
@@ -54,9 +54,10 @@ final class PersonFormData
 }
 ```
 
-It is important to note that the naming of the properties and constructor parameters **must** match the naming of the
-mapping files in the object mapping, otherwise you will get an exception about missing parameters or properties. On the
-other hand, the order of the parameters is not important.
+As we have not specified an `apply()` or `unapply()` callable when creating the object mapping, it is going to use the
+default functions supplied with Formidable. This means that the constructor will receive the arguments in the order in
+which they were specified during construction. When data are extracted from the form data for unbinding, all values will
+be extracted via reflection from the object, so the property names must match the mapping names.
 
 # Using the form to handle input
 
@@ -70,7 +71,7 @@ $form = $form->bindFromRequest($psr7ServerRequest);
 if (!$form->hasErrors()) {
     /* @var $personFormData PersonFormData */
     $personFormData = $form->getValue();
-    
+
     // You may use $personFormData now to populate some entity or store the data in a database.
 }
 

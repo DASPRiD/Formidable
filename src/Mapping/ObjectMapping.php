@@ -113,6 +113,7 @@ final class ObjectMapping implements MappingInterface
         $data = Data::none();
         $unapply = $this->unapply;
         $values = $unapply($value);
+        Assertion::isArray($values);
 
         foreach ($this->mappings as $key => $mapping) {
             Assertion::keyExists($values, $key);

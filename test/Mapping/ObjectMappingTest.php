@@ -15,7 +15,6 @@ use DASPRiD\Formidable\Mapping\ObjectMapping;
 use DASPRiD\FormidableTest\Mapping\TestAsset\SimpleObject;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
-use ReflectionException;
 use stdClass;
 
 /**
@@ -119,6 +118,13 @@ class ObjectMappingTest extends TestCase
 
         $this->expectException(AssertionFailedException::class);
         $objectMapping->unbind(new SimpleObject('baz', 'bat'));
+    }
+
+    public function testInvalidUnapplyReturnValue()
+    {
+        $objectMapping = new ObjectMapping([], SimpleObject::class, null, function () { return null; });
+        $this->expectException(AssertionFailedException::class);
+        $objectMapping->unbind(new SimpleObject('', ''));
     }
 
     public function testCreatePrefixedKey()
