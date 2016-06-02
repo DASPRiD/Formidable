@@ -122,7 +122,9 @@ class ObjectMappingTest extends TestCase
 
     public function testInvalidUnapplyReturnValue()
     {
-        $objectMapping = new ObjectMapping([], SimpleObject::class, null, function () { return null; });
+        $objectMapping = new ObjectMapping([], SimpleObject::class, null, function () {
+            return null;
+        });
         $this->expectException(AssertionFailedException::class);
         $objectMapping->unbind(new SimpleObject('', ''));
     }
