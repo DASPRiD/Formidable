@@ -79,19 +79,6 @@ class ObjectMappingTest extends TestCase
         $this->assertSame('bat', iterator_to_array($bindResult->getFormErrorSequence())[0]->getMessage());
     }
 
-    public function testBindObjectWithMissingArgument()
-    {
-        $data = Data::fromFlatArray(['foo' => 'baz', 'bar' => 'bat']);
-        $objectMapping = new ObjectMapping([
-            'foo' => $this->getMockedMapping('foo', 'baz', $data),
-            'bar' => $this->getMockedMapping('bar', 'bat', $data),
-            'none' => $this->getMockedMapping('none', 'none', $data),
-        ], SimpleObject::class);
-
-        $this->expectException(AssertionFailedException::class);
-        $objectMapping->bind($data);
-    }
-
     public function testBindAppliesConstraints()
     {
         $constraint = $this->prophesize(ConstraintInterface::class);
@@ -130,14 +117,25 @@ class ObjectMappingTest extends TestCase
             'none' => $this->getMockedMapping('none', 'none'),
         ], SimpleObject::class);
 
-        $this->expectException(ReflectionException::class);
+        $this->expectException(AssertionFailedException::class);
         $objectMapping->unbind(new SimpleObject('baz', 'bat'));
     }
 
     public function testCreatePrefixedKey()
     {
-        $mapping = (new ObjectMapping([], stdClass::class))->withPrefixAndRelativeKey('foo', 'bar');
-        $this->assertAttributeSame('foo[bar]', 'key', $mapping);
+        $objectMapping = (new ObjectMapping([], stdClass::class))->withPrefixAndRelativeKey('foo', 'bar');
+        $this->assertAttributeSame('foo[bar]', 'key', $objectMapping);
+    }
+
+    public function testKeyCloneCreatesNewMapings()
+    {
+        $mapping = $this->prophesize(MappingInterface::class);
+        $mapping->withPrefixAndRelativeKey('foo', 'bar')->shouldBeCalled()->willReturn($mapping->reveal());
+        $mapping->withPrefixAndRelativeKey('', 'bar')->shouldBeCalled()->willReturn($mapping->reveal());
+
+        (new ObjectMapping([
+            'bar' => $mapping->reveal(),
+        ], stdClass::class))->withPrefixAndRelativeKey('', 'foo');
     }
 
     /**

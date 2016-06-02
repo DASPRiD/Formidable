@@ -7,6 +7,7 @@ use Assert\Assertion;
 use DASPRiD\Formidable\Data;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
 use ReflectionClass;
+use ReflectionProperty;
 
 final class ObjectMapping implements MappingInterface
 {
@@ -23,39 +24,65 @@ final class ObjectMapping implements MappingInterface
     private $className;
 
     /**
+     * @var callable
+     */
+    private $apply;
+
+    /**
+     * @var callable
+     */
+    private $unapply;
+
+    /**
      * @var string
      */
-    private $key;
+    private $key = '';
 
     /**
      * @param MappingInterface[] $mappings
      */
-    public function __construct(array $mappings, $className, string $key = '')
+    public function __construct(array $mappings, $className, callable $apply = null, callable $unapply = null)
     {
         foreach ($mappings as $mappingKey => $mapping) {
             Assertion::string($mappingKey);
             Assertion::isInstanceOf($mapping, MappingInterface::class);
 
-            $this->mappings[$mappingKey] = $mapping->withPrefixAndRelativeKey($key, $mappingKey);
+            $this->mappings[$mappingKey] = $mapping->withPrefixAndRelativeKey($this->key, $mappingKey);
         }
 
         Assertion::classExists($className);
 
+        if (null === $apply) {
+            $apply = function (...$arguments) {
+                return new $this->className(...array_values($arguments));
+            };
+        }
+
+        if (null === $unapply) {
+            $unapply = function ($value) {
+                Assertion::isInstanceOf($value, $this->className);
+
+                $values = [];
+                $reflectionClass = new ReflectionClass($this->className);
+
+                foreach ($reflectionClass->getProperties() as $property) {
+                    /* @var $property ReflectionProperty */
+                    $property->setAccessible(true);
+                    $values[$property->getName()] = $property->getValue($value);
+                }
+
+                return $values;
+            };
+        }
+
         $this->className = $className;
-        $this->key = $key;
+        $this->apply = $apply;
+        $this->unapply = $unapply;
     }
 
     public function bind(Data $data) : BindResult
     {
-        $reflectionClass = new ReflectionClass($this->className);
-        $reflectionMethod = $reflectionClass->getMethod('__construct');
-
         $arguments = [];
-
-        foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-            $arguments[$reflectionParameter->getName()] = null;
-        }
-
         $formErrorSequence = new FormErrorSequence();
 
         foreach ($this->mappings as $key => $mapping) {
@@ -66,7 +93,6 @@ final class ObjectMapping implements MappingInterface
                 continue;
             }
 
-            Assertion::keyExists($arguments, $key);
             $arguments[$key] = $bindResult->getValue();
         }
 
@@ -74,20 +100,23 @@ final class ObjectMapping implements MappingInterface
             return BindResult::fromFormErrorSequence($formErrorSequence);
         }
 
-        return $this->applyConstraints($reflectionClass->newInstance(...array_values($arguments)), $this->key);
+        $apply = $this->apply;
+        $value = $apply(...array_values($arguments));
+
+        Assertion::isInstanceOf($value, $this->className);
+
+        return $this->applyConstraints($value, $this->key);
     }
 
     public function unbind($value) : Data
     {
-        Assertion::isInstanceOf($value, $this->className);
         $data = Data::none();
-        $reflectionClass = new ReflectionClass($this->className);
+        $unapply = $this->unapply;
+        $values = $unapply($value);
 
         foreach ($this->mappings as $key => $mapping) {
-            $reflectionProperty = $reflectionClass->getProperty($key);
-            $reflectionProperty->setAccessible(true);
-
-            $data = $data->merge($mapping->unbind($reflectionProperty->getValue($value)));
+            Assertion::keyExists($values, $key);
+            $data = $data->merge($mapping->unbind($values[$key]));
         }
 
         return $data;
@@ -95,10 +124,14 @@ final class ObjectMapping implements MappingInterface
 
     public function withPrefixAndRelativeKey(string $prefix, string $relativeKey) : MappingInterface
     {
-        return new self(
-            $this->mappings,
-            $this->className,
-            $this->createKeyFromPrefixAndRelativeKey($prefix, $relativeKey)
-        );
+        $clone = clone $this;
+        $clone->key = $this->createKeyFromPrefixAndRelativeKey($prefix, $relativeKey);
+        $clone->mappings = [];
+
+        foreach ($this->mappings as $mappingKey => $mapping) {
+            $clone->mappings[$mappingKey] = $mapping->withPrefixAndRelativeKey($clone->key, $mappingKey);
+        }
+
+        return $clone;
     }
 }
