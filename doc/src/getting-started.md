@@ -83,4 +83,8 @@ has the very simple reason that anything in Formidable is immutable. Thus, when 
 make any other changes, it will actually clone itself and return the clone with the changes applied. This guarantees
 that the original form object is always stateless and can be re-used in other places.
 
+# Rendering the form
 
+Rendering forms can be done completely manually, or by using helpers such as those provided by Formidable. The process
+of doing so is out of scope of this guide. It is described in detail in the [Rendering Forms](rendering-forms.md)
+section.

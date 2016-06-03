@@ -16,9 +16,9 @@ final class ErrorList
      */
     private $errorFormatter;
 
-    public function __construct(ErrorFormatter $errorFormatter)
+    public function __construct(ErrorFormatter $errorFormatter = null)
     {
-        $this->errorFormatter = $errorFormatter;
+        $this->errorFormatter = $errorFormatter ?: new ErrorFormatter();
     }
 
     public function __invoke(FormErrorSequence $errors, array $htmlAttributes = []) : string

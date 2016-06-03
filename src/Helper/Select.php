@@ -33,7 +33,7 @@ final class Select
         return $document->saveHTML($select);
     }
 
-    protected function addOptions(DOMDocument $document, DOMNode $node, array $options, array $selectedValues)
+    private function addOptions(DOMDocument $document, DOMNode $node, array $options, array $selectedValues)
     {
         foreach ($options as $value => $label) {
             Assertion::string($value);

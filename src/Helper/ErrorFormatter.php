@@ -9,7 +9,7 @@ use MessageFormatter;
 
 final class ErrorFormatter
 {
-    const BUILT_IN_MESSAGES = [
+    const BUILD_IN_MESSAGES = [
         'error.required' => 'This field is required',
         'error.integer' => 'Integer value expected',
         'error.float' => 'Float value expected',
@@ -27,7 +27,7 @@ final class ErrorFormatter
     public function __construct(array $messages = [])
     {
         Assertion::classExists(MessageFormatter::class);
-        $this->messages = array_replace(self::BUILT_IN_MESSAGES, $messages);
+        $this->messages = array_replace(self::BUILD_IN_MESSAGES, $messages);
     }
 
     public function __invoke(string $key, array $arguments = []) : string

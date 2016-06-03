@@ -7,4 +7,6 @@ theme: readthedocs
 pages:
     - index.md
     - 'Getting Started' : getting-started.md
-    
+    - 'Rendering Forms' : rendering-forms.md
+    - 'Build-in Helpers' : build-in-helpers.md
+
