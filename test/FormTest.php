@@ -119,9 +119,8 @@ class FormTest extends TestCase
 
     public function testWithError()
     {
-        $form = (
-            new Form($this->prophesize(MappingInterface::class
-        )->reveal()))->withError(new FormError('bar', 'foo'));
+        $form = (new Form($this->prophesize(MappingInterface::class)
+            ->reveal()))->withError(new FormError('bar', 'foo'));
         $this->assertTrue($form->hasErrors());
         $this->assertSame('bar', iterator_to_array($form->getErrors())[0]->getKey());
         $this->assertSame('foo', iterator_to_array($form->getErrors())[0]->getMessage());
