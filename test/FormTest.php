@@ -119,15 +119,20 @@ class FormTest extends TestCase
 
     public function testWithError()
     {
-        $form = (new Form($this->prophesize(MappingInterface::class)->reveal()))->withError(new FormError('', 'foo'));
+        $form = (
+            new Form($this->prophesize(MappingInterface::class
+        )->reveal()))->withError(new FormError('bar', 'foo'));
         $this->assertTrue($form->hasErrors());
-        $this->assertSame('foo', iterator_to_array($form->getGlobalErrors())[0]->getMessage());
+        $this->assertSame('bar', iterator_to_array($form->getErrors())[0]->getKey());
+        $this->assertSame('foo', iterator_to_array($form->getErrors())[0]->getMessage());
     }
 
     public function testWithGlobalError()
     {
         $form = (new Form($this->prophesize(MappingInterface::class)->reveal()))->withGlobalError('foo');
+        $this->assertTrue($form->hasErrors());
         $this->assertTrue($form->hasGlobalErrors());
+        $this->assertSame('', iterator_to_array($form->getGlobalErrors())[0]->getKey());
         $this->assertSame('foo', iterator_to_array($form->getGlobalErrors())[0]->getMessage());
     }
 

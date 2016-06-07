@@ -101,6 +101,11 @@ final class Form
         return !$this->errors->isEmpty();
     }
 
+    public function getErrors() : FormErrorSequence
+    {
+        return $this->errors;
+    }
+
     public function hasGlobalErrors() : bool
     {
         return !$this->getGlobalErrors()->isEmpty();
