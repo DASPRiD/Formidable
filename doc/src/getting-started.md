@@ -55,9 +55,10 @@ final class PersonFormData
 ```
 
 As we have not specified an `apply()` or `unapply()` callable when creating the object mapping, it is going to use the
-default functions supplied with Formidable. This means that the constructor will receive the arguments in the order in
-which they were specified during construction. When data are extracted from the form data for unbinding, all values will
-be extracted via reflection from the object, so the property names must match the mapping names.
+default functions supplied with Formidable. This means that the `PersonFormData` constructor will receive the arguments
+in the order in which they were specified during object mapping construction. When data are extracted from the form data
+for unbinding, all values will be extracted via reflection from the object, so the property names must match the mapping
+names.
 
 # Using the form to handle input
 

@@ -7,9 +7,14 @@ use DASPRiD\Formidable\Mapping\Constraint\EmailAddressConstraint;
 use DASPRiD\Formidable\Mapping\FieldMapping;
 use DASPRiD\Formidable\Mapping\FieldMappingFactory;
 use DASPRiD\Formidable\Mapping\Formatter\BooleanFormatter;
+use DASPRiD\Formidable\Mapping\Formatter\DateFormatter;
+use DASPRiD\Formidable\Mapping\Formatter\DateTimeFormatter;
+use DASPRiD\Formidable\Mapping\Formatter\DecimalFormatter;
 use DASPRiD\Formidable\Mapping\Formatter\FloatFormatter;
 use DASPRiD\Formidable\Mapping\Formatter\IntegerFormatter;
 use DASPRiD\Formidable\Mapping\Formatter\TextFormatter;
+use DASPRiD\Formidable\Mapping\Formatter\TimeFormatter;
+use DateTimeZone;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
@@ -66,11 +71,81 @@ class FieldMappingFactoryTest extends TestCase
         $this->assertAttributeCount(0, 'constraints', $fieldMapping);
     }
 
+    public function testDecimalFactory()
+    {
+        $fieldMapping = FieldMappingFactory::decimal();
+        $this->assertInstanceOf(FieldMapping::class, $fieldMapping);
+        $this->assertAttributeInstanceOf(DecimalFormatter::class, 'binder', $fieldMapping);
+        $this->assertAttributeCount(0, 'constraints', $fieldMapping);
+    }
+
     public function testBooleanFactory()
     {
         $fieldMapping = FieldMappingFactory::boolean();
         $this->assertInstanceOf(FieldMapping::class, $fieldMapping);
         $this->assertAttributeInstanceOf(BooleanFormatter::class, 'binder', $fieldMapping);
         $this->assertAttributeCount(0, 'constraints', $fieldMapping);
+    }
+
+    public function testDefaultTimeFactory()
+    {
+        $fieldMapping = FieldMappingFactory::time();
+        $this->assertInstanceOf(FieldMapping::class, $fieldMapping);
+        $this->assertAttributeInstanceOf(TimeFormatter::class, 'binder', $fieldMapping);
+        $this->assertAttributeCount(0, 'constraints', $fieldMapping);
+
+        $formatter = self::readAttribute($fieldMapping, 'binder');
+        $timeZone = self::readAttribute($formatter, 'timeZone');
+        $this->assertSame('UTC', $timeZone->getName());
+    }
+
+    public function testTimeFactoryWithOptions()
+    {
+        $fieldMapping = FieldMappingFactory::time(new DateTimeZone('Europe/Berlin'));
+        $formatter = self::readAttribute($fieldMapping, 'binder');
+        $timeZone = self::readAttribute($formatter, 'timeZone');
+        $this->assertSame('Europe/Berlin', $timeZone->getName());
+    }
+
+    public function testDateFactory()
+    {
+        $fieldMapping = FieldMappingFactory::date();
+        $this->assertInstanceOf(FieldMapping::class, $fieldMapping);
+        $this->assertAttributeInstanceOf(DateFormatter::class, 'binder', $fieldMapping);
+        $this->assertAttributeCount(0, 'constraints', $fieldMapping);
+
+        $formatter = self::readAttribute($fieldMapping, 'binder');
+        $timeZone = self::readAttribute($formatter, 'timeZone');
+        $this->assertSame('UTC', $timeZone->getName());
+    }
+
+    public function testDateFactoryWithOptions()
+    {
+        $fieldMapping = FieldMappingFactory::date(new DateTimeZone('Europe/Berlin'));
+        $formatter = self::readAttribute($fieldMapping, 'binder');
+        $timeZone = self::readAttribute($formatter, 'timeZone');
+        $this->assertSame('Europe/Berlin', $timeZone->getName());
+    }
+
+    public function testDateTimeFactory()
+    {
+        $fieldMapping = FieldMappingFactory::dateTime();
+        $this->assertInstanceOf(FieldMapping::class, $fieldMapping);
+        $this->assertAttributeInstanceOf(DateTimeFormatter::class, 'binder', $fieldMapping);
+        $this->assertAttributeCount(0, 'constraints', $fieldMapping);
+
+        $formatter = self::readAttribute($fieldMapping, 'binder');
+        $timeZone = self::readAttribute($formatter, 'timeZone');
+        $this->assertSame('UTC', $timeZone->getName());
+        $this->assertAttributeSame(false, 'localTime', $formatter);
+    }
+
+    public function testDateTimeFactoryWithOptions()
+    {
+        $fieldMapping = FieldMappingFactory::dateTime(new DateTimeZone('Europe/Berlin'), true);
+        $formatter = self::readAttribute($fieldMapping, 'binder');
+        $timeZone = self::readAttribute($formatter, 'timeZone');
+        $this->assertSame('Europe/Berlin', $timeZone->getName());
+        $this->assertAttributeSame(true, 'localTime', $formatter);
     }
 }
