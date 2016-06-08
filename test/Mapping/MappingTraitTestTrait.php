@@ -11,8 +11,8 @@ trait MappingTraitTestTrait
     public function testVerifyingReturnsNewInstanceWithNewConstraints()
     {
         $mappingA = $this->getInstanceForTraitTests();
-        $mappingB = $mappingA->verifying($this->getMock(ConstraintInterface::class));
-        $mappingC = $mappingB->verifying($this->getMock(ConstraintInterface::class));
+        $mappingB = $mappingA->verifying($this->prophesize(ConstraintInterface::class)->reveal());
+        $mappingC = $mappingB->verifying($this->prophesize(ConstraintInterface::class)->reveal());
 
         $this->assertNotSame($mappingA, $mappingB);
         $this->assertNotSame($mappingB, $mappingC);
