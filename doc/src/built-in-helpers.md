@@ -34,10 +34,10 @@ Renders a `<select>` element. The `Select` helper takes an extra second argument
 array of options. Each options element can either be a `string => string` or it can be a `string => array`.
 
 - `string => string`
-  - A normal `<option>`, with the array key being the value and the array value being the label
+    - A normal `<option>`, with the array key being the value and the array value being the label
 - `string => array`
-  - An `<optgroup>`, with the array key being the label and the array value being the child options
-  - Option groups can also be nested.
+    - An `<optgroup>`, with the array key being the label and the array value being the child options
+    - Option groups can also be nested.
 
 # Error Helpers
 
