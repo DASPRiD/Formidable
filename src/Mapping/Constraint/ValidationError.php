@@ -15,10 +15,16 @@ final class ValidationError
      */
     private $arguments;
 
-    public function __construct(string $message, array $arguments = [])
+    /**
+     * @var string
+     */
+    private $keySuffix;
+
+    public function __construct(string $message, array $arguments = [], string $keySuffix = '')
     {
         $this->message = $message;
         $this->arguments = $arguments;
+        $this->keySuffix = $keySuffix;
     }
 
     public function getMessage() : string
@@ -29,5 +35,10 @@ final class ValidationError
     public function getArguments() : array
     {
         return $this->arguments;
+    }
+
+    public function getKeySuffix() : string
+    {
+        return $this->keySuffix;
     }
 }

@@ -10,4 +10,7 @@ pages:
     - 'Rendering Forms' : rendering-forms.md
     - 'Build-in Helpers' : build-in-helpers.md
     - 'Mappings' : mappings.md
+    - 'Constraints' : constraints.md
 
+markdown_extensions:
+    - admonition:

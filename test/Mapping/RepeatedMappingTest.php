@@ -83,7 +83,7 @@ class RepeatedMappingTest extends TestCase
         $wrappedMapping->bind($data)->willReturn(BindResult::fromValue('baz'));
 
         $constraint = $this->prophesize(ConstraintInterface::class);
-        $constraint->__invoke(['baz'])->willReturn(new ValidationResult(new ValidationError('bar')));
+        $constraint->__invoke(['baz'])->willReturn(new ValidationResult(new ValidationError('bar', [], '0')));
 
         $mapping = (new RepeatedMapping($wrappedMapping->reveal()))->withPrefixAndRelativeKey('foo', 'bar')->verifying(
             $constraint->reveal()
@@ -91,6 +91,7 @@ class RepeatedMappingTest extends TestCase
         $bindResult = $mapping->bind($data);
         $this->assertFalse($bindResult->isSuccess());
         $this->assertSame('bar', $bindResult->getFormErrorSequence()->getIterator()->current()->getMessage());
+        $this->assertSame('foo[bar][0]', $bindResult->getFormErrorSequence()->getIterator()->current()->getKey());
     }
 
     public function testUnbindInvalidValue()

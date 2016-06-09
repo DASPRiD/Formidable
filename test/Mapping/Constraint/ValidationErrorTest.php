@@ -20,4 +20,16 @@ class ValidationErrorTest extends TestCase
     {
         $this->assertSame(['foo'], (new ValidationError('', ['foo']))->getArguments());
     }
+
+    public function testKeySuffixRetrieval()
+    {
+        $this->assertSame('foo', (new ValidationError('', [], 'foo'))->getKeySuffix());
+    }
+
+    public function testDefaults()
+    {
+        $validationError = new ValidationError('');
+        $this->assertSame([], $validationError->getArguments());
+        $this->assertSame('', $validationError->getKeySuffix());
+    }
 }

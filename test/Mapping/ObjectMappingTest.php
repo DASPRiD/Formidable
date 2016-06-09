@@ -82,8 +82,8 @@ class ObjectMappingTest extends TestCase
     {
         $constraint = $this->prophesize(ConstraintInterface::class);
         $constraint->__invoke(Argument::type(SimpleObject::class))->willReturn(new ValidationResult(
-            new ValidationError('error')
-        ))->shouldBeCalled();
+            new ValidationError('error', [], 'foo[bar]')
+        ));
 
         $data = Data::fromFlatArray(['foo' => 'baz', 'bar' => 'bat']);
         $objectMapping = (new ObjectMapping([
@@ -93,7 +93,9 @@ class ObjectMappingTest extends TestCase
 
         $bindResult = $objectMapping->bind($data);
         $this->assertFalse($bindResult->isSuccess());
-        $this->assertSame('error', iterator_to_array($bindResult->getFormErrorSequence())[0]->getMessage());
+        $formError = iterator_to_array($bindResult->getFormErrorSequence())[0];
+        $this->assertSame('error', $formError->getMessage());
+        $this->assertSame('foo[bar]', $formError->getKey());
     }
 
     public function testUnbindObject()

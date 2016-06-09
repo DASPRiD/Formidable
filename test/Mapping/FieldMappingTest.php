@@ -62,6 +62,7 @@ class FieldMappingTest extends TestCase
         $bindResult = $mapping->bind($data);
         $this->assertFalse($bindResult->isSuccess());
         $this->assertSame('bar', $bindResult->getFormErrorSequence()->getIterator()->current()->getMessage());
+        $this->assertSame('foo', $bindResult->getFormErrorSequence()->getIterator()->current()->getKey());
     }
 
     public function testUnbind()

@@ -36,7 +36,19 @@ trait MappingTrait
 
         return BindResult::fromFormErrors(...array_map(
             function (ValidationError $validationError) use ($key) {
-                return new FormError($key, $validationError->getMessage(), $validationError->getArguments());
+                if ('' === $key) {
+                    $finalKey = $validationError->getKeySuffix();
+                } elseif ('' === $validationError->getKeySuffix()) {
+                    $finalKey = $key;
+                } else {
+                    $finalKey = $key . preg_replace('(^[^\[]+)', '[\0]', $validationError->getKeySuffix());
+                }
+
+                return new FormError(
+                    $finalKey,
+                    $validationError->getMessage(),
+                    $validationError->getArguments()
+                );
             },
             iterator_to_array($validationResult->getValidationErrors())
         ));

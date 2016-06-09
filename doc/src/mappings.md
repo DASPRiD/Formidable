@@ -69,7 +69,7 @@ mapping during construction. Formidable comes with a set of standard formatters 
 field mappings with them. The `FieldMappingFactory` has the following methods which will all return configured field
 mappings:
 
--  `text($minLength = 0, $maxLength = null, $encoding = 'utf-8')`<br />
+- `text($minLength = 0, $maxLength = null, $encoding = 'utf-8')`<br />
     Creates a simple string-to-string mapping, optionally applying constraints for the length of the string.
 
 - `emailAddress()`<br />
@@ -104,10 +104,3 @@ mappings:
     `datetime`, you don't have to set the `$localTime` parameter. When using the `datetime-local` type, the browser will
     not submit a time zone, so it is important to pass a time zone to the factory in which the datetime should be
     interpreted, if not UTC, and set `$localTime` to `true`.
-
-# Validation
-
-All build-in mappings support additionally validation. To assign a constraint to a mapping, you can call the
-`verifying(ConstraintInterface $constraint)` method on it, which will return a new instance of the mapping with the
-constraint added to it. You can call the method multiple times to generated an object with multiple constraints
-assigned.
