@@ -40,11 +40,8 @@ final class ObjectMapping implements MappingInterface
 
     /**
      * @param MappingInterface[] $mappings
-     * @param string $className
-     * @param callable|null $apply
-     * @param callable|null $unapply
      */
-    public function __construct(array $mappings, $className, callable $apply = null, callable $unapply = null)
+    public function __construct(array $mappings, string $className, callable $apply = null, callable $unapply = null)
     {
         foreach ($mappings as $mappingKey => $mapping) {
             Assertion::string($mappingKey);
