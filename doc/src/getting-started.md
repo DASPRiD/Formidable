@@ -1,7 +1,8 @@
 # Creating your first form
 
-In Formidable, forms handle all your POST array input<sup>[1](#footnotes)</sup>, validate it, and return typed form data. To achieve this,
-each form gets a mapping assigned which specifies how to handle the required data types. Let's look at a simple example:
+In Formidable, forms handle all your POST array input<sup>[1](#footnotes)</sup>, validate it, and return typed form
+data. To achieve this, each form gets a mapping assigned which specifies how to handle the required data types. Let's
+look at a simple example:
 
 ```php
 <?php
