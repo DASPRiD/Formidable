@@ -2,8 +2,8 @@ Formidable ships with a few helpers, located in the `DASPRiD\Formidable\Helper` 
 
 The guiding principles here are as follows:
 
-* Support the [HTML Form Input Types](http://www.w3schools.com/html/html_form_input_types.asp)
-* Limit the markup output to the tags required for the input type
+- Support the [HTML Form Input Types](http://www.w3schools.com/html/html_form_input_types.asp)
+- Limit the markup output to the tags required for the input type
 
 # Input Helpers
 
@@ -33,11 +33,11 @@ Renders out a single checkbox and marks it as checked if the the field value equ
 Renders a `<select>` element. The `Select` helper takes an extra second argument that the other helpers don't need: an
 array of options. Each options element can either be a `string => string` or it can be a `string => array`.
 
-* `string => string`
-  * A normal `<option>`, with the array key being the value and the array value being the label
-* `string => array`
-  * An `<optgroup>`, with the array key being the label and the array value being the child options
-  * Option groups can also be nested.
+- `string => string`
+  - A normal `<option>`, with the array key being the value and the array value being the label
+- `string => array`
+  - An `<optgroup>`, with the array key being the label and the array value being the child options
+  - Option groups can also be nested.
 
 # Error Helpers
 

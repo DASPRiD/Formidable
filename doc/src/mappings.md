@@ -7,8 +7,8 @@ namespace:
 
 This mapping handles conversion between PHP objects and sets of values. During construction, it takes two arguments:
 
-* An array of mappings, where each key corresponds to a POST parameter
-* The class name of a form data object, to which the values are mapped
+- An array of mappings, where each key corresponds to a POST parameter
+- The class name of a form data object, to which the values are mapped
 
 By default, all values are passed to the form data constructor in the order in which they were specified in the object
 mapping array, and read via reflection from the form data object. This means that your form data constructor *requires
@@ -19,10 +19,10 @@ the object.
 
 ## Optional `apply()` and `unapply()` callables
 
-* The `apply()` callable will also *require all parameters in the order in which they were specified* during object
+- The `apply()` callable will also *require all parameters in the order in which they were specified* during object
 mapping construction and must return a class of the type specified in the object mapping.
 
-* The `unapply()` method will get the object passed in as single parameter and must return an array with all values,
+- The `unapply()` method will get the object passed in as single parameter and must return an array with all values,
 having the same key as within the object mapping.
 
 ## Nesting `MappingInterface` values
@@ -86,37 +86,37 @@ mapping during construction. Formidable comes with a set of standard formatters 
 field mappings with them. The `FieldMappingFactory` has the following methods which will all return configured field
 mappings:
 
-* `text($minLength = 0, $maxLength = null, $encoding = 'utf-8')`
-  * Creates a simple string-to-string mapping, optionally applying constraints for the length of the string.
+- `text($minLength = 0, $maxLength = null, $encoding = 'utf-8')`
+  - Creates a simple string-to-string mapping, optionally applying constraints for the length of the string.
 
-* `emailAddress()`
-  * Creates a mapping which requires the input string to be a valid email address.
+- `emailAddress()`
+  - Creates a mapping which requires the input string to be a valid email address.
 
-* `integer()`
-  * Creates a mapping between input strings and PHP integers, validating that the input string is actually a valid
+- `integer()`
+  - Creates a mapping between input strings and PHP integers, validating that the input string is actually a valid
     integer string.
 
-* `float()`
-  * Creates a mapping between input strings and PHP floats, validating that the input string is actually a valid float
+- `float()`
+  - Creates a mapping between input strings and PHP floats, validating that the input string is actually a valid float
     string.
 
-* `decimal()`
-  * Similar to `float()`, but keeps the the number as a string after validation.
+- `decimal()`
+  - Similar to `float()`, but keeps the the number as a string after validation.
 
-* `boolean()`
-  * Creates a mapping between input strings and PHP booleans. The input string must either be `"true"`, `"false"` or be
+- `boolean()`
+  - Creates a mapping between input strings and PHP booleans. The input string must either be `"true"`, `"false"` or be
     absent. This latter special requirement is because unchecked checkboxes are not transferred at all.
 
-* `time(DateTimeZone $timeZone = null)`
-  * Creates a mapping for `<input type="time">` to `ImmutableDateTime`. By default, times are treated as UTC, but you
+- `time(DateTimeZone $timeZone = null)`
+  - Creates a mapping for `<input type="time">` to `ImmutableDateTime`. By default, times are treated as UTC, but you
     can also pass a custom time zone to the factory.
 
-* `date(DateTimeZone $timeZone = null)`
-  * Creates a mapping for `<input type="date">` to `ImmutableDateTime`. By default, times are treated as UTC, but you
+- `date(DateTimeZone $timeZone = null)`
+  - Creates a mapping for `<input type="date">` to `ImmutableDateTime`. By default, times are treated as UTC, but you
     can also pass a custom time zone to the factory.
 
-* `dateTime(DateTimeZone $timeZone = null, $localTime = false)`
-  * Creates a mapping for `<input type="datetime">` and `<input type="datetime-local">` to `ImmutableDateTime`. By
+- `dateTime(DateTimeZone $timeZone = null, $localTime = false)`
+  - Creates a mapping for `<input type="datetime">` and `<input type="datetime-local">` to `ImmutableDateTime`. By
     default, times are treated as UTC, but you can also pass a custom time zone to the factory. When using type
     `datetime`, you don't have to set the `$localTime` parameter. When using the `datetime-local` type, the browser will
     not submit a time zone, so it is important to pass a time zone to the factory in which the datetime should be

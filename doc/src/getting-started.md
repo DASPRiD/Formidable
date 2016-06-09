@@ -17,8 +17,8 @@ $form = new Form(new ObjectMapping([
 
 This will create a basic form with two fields:
 
-* a name (which must be at least one character long)
-* an email address
+- a name (which must be at least one character long)
+- an email address
 
 The ObjectMapping class defines how the form fields map to a typed form data object. The form data object is an
 intermediate transfer object, distinct from an entity. It is the bridge between the form and the entity. It is
