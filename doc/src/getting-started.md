@@ -86,12 +86,12 @@ if (!$form->hasErrors()) {
 // At this point, the form validation found an error, so you should re-display the form.
 ```
 
-# A note about immutability
+!!!note "A note about immutability"
 
-You may have noticed that the `$form` variable was re-assigned when binding the request. This is because everything in
-Formidable is immutable. Thus, when you bind a request to a form or try to make any other changes, it will actually
-clone itself and return the clone with the changes applied. This guarantees that the original form instance is stateless
-and can be re-used in other places without ambiguous state.
+    You may have noticed that the `$form` variable was re-assigned when binding the request. This is because everything
+    in Formidable is immutable. Thus, when you bind a request to a form or try to make any other changes, it will
+    actually clone itself and return the clone with the changes applied. This guarantees that the original form instance
+    is stateless and can be re-used in other places without ambiguous state.
 
 # Rendering the form
 
