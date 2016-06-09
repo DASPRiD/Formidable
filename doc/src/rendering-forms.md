@@ -1,6 +1,6 @@
 # Rendering forms manually
 
-The idea behind Formidable is to give you as much control about the rendering process as possible. The simplest way to
+The idea behind Formidable is to give you as much control over the rendering process as possible. The simplest way to
 approach this is by rendering the form manually, with data retrieved from the form object. The first thing to note is
 that the form itself does not know which fields exists and which don't. This means that there is no multi-purpose code
 which renders out the entire HTML based on a given form object. Instead, you have to actually know, which fields exist
@@ -55,9 +55,9 @@ like this:
 </form>
 ```
 
-This is a very basic example, but it should give you an idea about how rendering works. As you can see, writing the code
-for your forms can become quite repetitive, which is why you should write helpers to render the HTML exactly the way you
-need it in your project.
+This example builds everything manually to illustrate how rendering works at the basic level. You probably won't really
+be writing the code for your forms like this, because it is quite repetitive. You will almost always want to take
+advantage of helpers to render the HTML exactly the way the HTML/CSS design on a particular project expects it.
 
 # Using Formidable helpers
 
@@ -86,7 +86,16 @@ $inputText = new DASPRiD\Formidable\Helper\InputText();
 </form>
 ```
 
-As you can see, the code already got a lot more compact. You can of course write your own helpers instead to minimize
-the code even more, either by implementing the logic completely yourself or by re-using the existing helpers within your
+As you can see, the code is a lot more compact. You can of course write your own helpers instead to minimize
+the code even more, either by implementing the logic yourself or by re-using the Formidable helpers within your
 own. Formidable ships with more helpers, suitable to render multiple kinds of inputs, which are described in the
-[Build-in Helpers](build-in-helpers.md) section.
+[Built-in Helpers](built-in-helpers.md) section.
+
+# Third-party helper packages
+
+It is an intentional design decision that Formidable is not opinionated about which templating language and front-end
+framework should or will be used.
+
+It's possible that third-party helper packages could be created and shared, with particular design biases made with
+regard to the templating language and the front-end framework. For example, one could imagine a Plates plus Bootstrap
+forms helper package being built on top of Formidable.
