@@ -22,6 +22,9 @@ have another object mapping as a child. This allows you to have more complex val
 are named within HTML, take this example:
 
 ```php
+use DASPRiD\Formidable\Mapping\FieldMappingFactory;
+use DASPRiD\Formidable\Mapping\ObjectMapping;
+
 $mapping = new ObjectMapping([
     'child' => new ObjectMapping([
         'text' => FieldMappingFactory::text(),
@@ -50,6 +53,10 @@ Consider a simple example where you have a multi select. You'd wrap a `RepeatedM
 that:
 
 ```php
+use DASPRiD\Formidable\Mapping\FieldMappingFactory;
+use DASPRiD\Formidable\Mapping\ObjectMapping;
+use DASPRiD\Formidable\Mapping\RepeatedMapping;
+
 $mapping = new ObjectMapping([
     'selections' => new RepeatedMapping(FieldMappingFactory::text()),
 ], SomeFormData::class);

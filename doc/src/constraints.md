@@ -85,6 +85,7 @@ Now when creating your mapping, you would assign the constraint to the object ma
 ```php
 <?php
 use DASPRiD\Formidable\Mapping\FieldMappingFactory;
+use DASPRiD\Formidable\Mapping\ObjectMapping;
 
 $mapping = (new ObjectMapping([
     'password' => FieldMappingFactory::text(1),
