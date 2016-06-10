@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\FormError;
 
+use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Traversable;
@@ -38,7 +39,7 @@ final class FormErrorSequence implements IteratorAggregate, Countable
 
     public function getIterator() : Traversable
     {
-        yield from $this->formErrors;
+        return new ArrayIterator($this->formErrors);
     }
 
     public function count() : int

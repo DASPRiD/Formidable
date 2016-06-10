@@ -34,6 +34,6 @@ final class ValidationResult
      */
     public function getValidationErrors() : Traversable
     {
-        yield from $this->validationErrors;
+        return new ArrayIterator($this->validationErrors);
     }
 }
