@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Mapping\Constraint;
 
+use ArrayIterator;
 use Traversable;
 
 final class ValidationResult
