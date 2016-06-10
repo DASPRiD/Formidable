@@ -1,8 +1,8 @@
 # Creating your first form
 
-In Formidable, forms handle all your POST array input<sup>[1](#footnotes)</sup>, validate it, and return typed form
-data. To achieve this, each form gets a mapping assigned which specifies how to handle the required data types. Let's
-look at a simple example:
+In Formidable, forms handle all your POST array input[^file-uploads], validate it, and return typed form data. To
+achieve this, each form gets a mapping assigned which specifies how to handle the required data types. Let's look at a
+simple example:
 
 ```php
 <?php
@@ -99,6 +99,4 @@ if (!$form->hasErrors()) {
 Rendering forms can be done manually, or by using helpers such as those provided by Formidable. The process of doing so
 is described in detail in the [Rendering Forms](rendering-forms.md) section.
 
-# Footnotes
-
-1. Formidable doesn't handle file uploads at this time, as we currently consider that out of scope.
+[^file-uploads]: Formidable doesn't handle file uploads at this time, as we currently consider that out of scope.
