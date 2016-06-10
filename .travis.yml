@@ -16,8 +16,10 @@ matrix:
         - EXECUTE_CS_CHECK=true
         - EXECUTE_TEST_COVERALLS=true
         - PATH="$HOME/.local/bin:$PATH"
+    - php: nightly
     - php: hhvm
   allow_failures:
+    - php: nightly
     - php: hhvm
 
 before_install:
