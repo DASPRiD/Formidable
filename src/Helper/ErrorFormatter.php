@@ -14,9 +14,15 @@ final class ErrorFormatter
         'error.integer' => 'Integer value expected',
         'error.float' => 'Float value expected',
         'error.boolean' => 'Boolean value expected',
+        'error.date' => 'Date value expected',
+        'error.time' => 'Time value expected',
+        'error.date-time' => 'Datetime value expected',
         'error.email-address' => 'Valid email address required',
         'error.min-length' => 'Minimum length is {lengthLimit, plural, one {# character} other {# characters}}',
         'error.max-length' => 'Maximum length is {lengthLimit, plural, one {# character} other {# characters}}',
+        'error.min-number' => 'Minimum value is {limit, number}',
+        'error.max-number' => 'Maximum value is {limit, number}',
+        'error.step-number' => 'Value is invalid, closest valid values are {lowValue, number} and {highValue, number}',
     ];
 
     /**

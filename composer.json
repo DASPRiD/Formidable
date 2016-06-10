@@ -19,17 +19,21 @@
     ],
     "require": {
         "php": "^7.0",
-        "ext-iconv": "*",
         "psr/http-message": "^1.0",
         "beberlei/assert": "^2.5"
     },
     "require-dev": {
+        "ext-bcmath": "*",
+        "ext-iconv": "*",
         "ext-intl": "*",
         "phpunit/phpunit": "^5.3",
-        "squizlabs/php_codesniffer": "^2.6"
+        "squizlabs/php_codesniffer": "^2.6",
+        "litipk/php-bignumbers": "^0.7.3"
     },
     "suggest": {
-        "ext-intl": "Allows using the built-in error formatter helper"
+        "ext-iconv": "Allows using the built-in string length constraints",
+        "ext-intl": "Allows using the built-in error formatter helper",
+        "litipk/php-bignumbers": "Allows using the built-in number range constraints"
     },
     "autoload": {
         "psr-4": {

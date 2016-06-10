@@ -86,38 +86,47 @@ mapping during construction. Formidable comes with a set of standard formatters 
 field mappings with them. The `FieldMappingFactory` has the following methods which will all return configured field
 mappings:
 
-- `text($minLength = 0, $maxLength = null, $encoding = 'utf-8')`
-    - Creates a simple string-to-string mapping, optionally applying constraints for the length of the string.
+`text(int $minLength = 0, int $maxLength = null, string $encoding = 'utf-8')`
+:   Creates a simple string-to-string mapping, optionally applying constraints for the length of the string.
 
-- `emailAddress()`
-    - Creates a mapping which requires the input string to be a valid email address.
+`emailAddress()`
+:   Creates a mapping which requires the input string to be a valid email address.
 
-- `integer()`
-    - Creates a mapping between input strings and PHP integers, validating that the input string is actually a valid
+`url()`
+:   Creates a mapping which requires the input string to be a valid URL.
+
+`integer(int $min = null, int $max = null, int $step = null)`
+:   Creates a mapping between input strings and PHP integers, validating that the input string is actually a valid
     integer string.
 
-- `float()`
-    - Creates a mapping between input strings and PHP floats, validating that the input string is actually a valid float
+`float(float $min = null, float $max = null, float $step = null)`
+:   Creates a mapping between input strings and PHP floats, validating that the input string is actually a valid float
     string.
 
-- `decimal()`
-    - Similar to `float()`, but keeps the the number as a string after validation.
+`decimal(string $min = null, string $max = null, string $step = null)`
+:   Similar to `float()`, but keeps the the number as a string after validation.
 
-- `boolean()`
-    - Creates a mapping between input strings and PHP booleans. The input string must either be `"true"`, `"false"` or be
+`boolean()`
+:   Creates a mapping between input strings and PHP booleans. The input string must either be `"true"`, `"false"` or be
     absent. This latter special requirement is because unchecked checkboxes are not transferred at all.
 
-- `time(DateTimeZone $timeZone = null)`
-    - Creates a mapping for `<input type="time">` to `ImmutableDateTime`. By default, times are treated as UTC, but you
+`time(DateTimeZone $timeZone = null)`
+:   Creates a mapping for `<input type="time">` to `ImmutableDateTime`. By default, times are treated as UTC, but you
     can also pass a custom time zone to the factory.
 
-- `date(DateTimeZone $timeZone = null)`
-    - Creates a mapping for `<input type="date">` to `ImmutableDateTime`. By default, times are treated as UTC, but you
+`date(DateTimeZone $timeZone = null)`
+:   Creates a mapping for `<input type="date">` to `ImmutableDateTime`. By default, times are treated as UTC, but you
     can also pass a custom time zone to the factory.
 
-- `dateTime(DateTimeZone $timeZone = null, $localTime = false)`
-    - Creates a mapping for `<input type="datetime">` and `<input type="datetime-local">` to `ImmutableDateTime`. By
+`dateTime(DateTimeZone $timeZone = null, $localTime = false)`
+:   Creates a mapping for `<input type="datetime">` and `<input type="datetime-local">` to `ImmutableDateTime`. By
     default, times are treated as UTC, but you can also pass a custom time zone to the factory. When using type
     `datetime`, you don't have to set the `$localTime` parameter. When using the `datetime-local` type, the browser will
     not submit a time zone, so it is important to pass a time zone to the factory in which the datetime should be
     interpreted, if not UTC, and set `$localTime` to `true`.
+
+!!!note "Optional dependencies for constraints"
+
+    Some constraints require additional PHP extensions or other libraries to function. For instance, the string length
+    constraints require `ext-iconv` extension to check the actual character length, while the number range constraints
+    require the `litipk/php-bignumbers` library.

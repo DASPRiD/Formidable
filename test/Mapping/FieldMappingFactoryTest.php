@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace DASPRiD\FormidableTest\Mapping;
 
 use DASPRiD\Formidable\Mapping\Constraint\EmailAddressConstraint;
+use DASPRiD\Formidable\Mapping\Constraint\UrlConstraint;
 use DASPRiD\Formidable\Mapping\FieldMapping;
 use DASPRiD\Formidable\Mapping\FieldMappingFactory;
 use DASPRiD\Formidable\Mapping\Formatter\BooleanFormatter;
@@ -55,7 +56,16 @@ class FieldMappingFactoryTest extends TestCase
         $this->assertInstanceOf(EmailAddressConstraint::class, self::readAttribute($fieldMapping, 'constraints')[0]);
     }
 
-    public function testIntegerFactory()
+    public function testUrlFactory()
+    {
+        $fieldMapping = FieldMappingFactory::url();
+        $this->assertInstanceOf(FieldMapping::class, $fieldMapping);
+        $this->assertAttributeInstanceOf(TextFormatter::class, 'binder', $fieldMapping);
+        $this->assertAttributeCount(1, 'constraints', $fieldMapping);
+        $this->assertInstanceOf(UrlConstraint::class, self::readAttribute($fieldMapping, 'constraints')[0]);
+    }
+
+    public function testIntegerFactoryWithoutConstraints()
     {
         $fieldMapping = FieldMappingFactory::integer();
         $this->assertInstanceOf(FieldMapping::class, $fieldMapping);
@@ -63,7 +73,22 @@ class FieldMappingFactoryTest extends TestCase
         $this->assertAttributeCount(0, 'constraints', $fieldMapping);
     }
 
-    public function testFloatFactory()
+    public function testIntegerFactoryWithConstraints()
+    {
+        $fieldMapping = FieldMappingFactory::integer(1, 3, 2);
+        $this->assertInstanceOf(FieldMapping::class, $fieldMapping);
+        $this->assertAttributeInstanceOf(IntegerFormatter::class, 'binder', $fieldMapping);
+        $this->assertAttributeCount(3, 'constraints', $fieldMapping);
+
+        $constraints = self::readAttribute($fieldMapping, 'constraints');
+
+        $this->assertAttributeEquals('1', 'limit', $constraints[0]);
+        $this->assertAttributeEquals('3', 'limit', $constraints[1]);
+        $this->assertAttributeEquals('2', 'step', $constraints[2]);
+        $this->assertAttributeEquals('1', 'base', $constraints[2]);
+    }
+
+    public function testFloatFactoryWithoutConstraints()
     {
         $fieldMapping = FieldMappingFactory::float();
         $this->assertInstanceOf(FieldMapping::class, $fieldMapping);
@@ -71,12 +96,42 @@ class FieldMappingFactoryTest extends TestCase
         $this->assertAttributeCount(0, 'constraints', $fieldMapping);
     }
 
-    public function testDecimalFactory()
+    public function testFloatFactoryWithConstraints()
+    {
+        $fieldMapping = FieldMappingFactory::float(1.5, 3., 0.5);
+        $this->assertInstanceOf(FieldMapping::class, $fieldMapping);
+        $this->assertAttributeInstanceOf(FloatFormatter::class, 'binder', $fieldMapping);
+        $this->assertAttributeCount(3, 'constraints', $fieldMapping);
+
+        $constraints = self::readAttribute($fieldMapping, 'constraints');
+
+        $this->assertAttributeEquals('1.5', 'limit', $constraints[0]);
+        $this->assertAttributeEquals('3', 'limit', $constraints[1]);
+        $this->assertAttributeEquals('0.5', 'step', $constraints[2]);
+        $this->assertAttributeEquals('1.5', 'base', $constraints[2]);
+    }
+
+    public function testDecimalFactoryWithoutConstraints()
     {
         $fieldMapping = FieldMappingFactory::decimal();
         $this->assertInstanceOf(FieldMapping::class, $fieldMapping);
         $this->assertAttributeInstanceOf(DecimalFormatter::class, 'binder', $fieldMapping);
         $this->assertAttributeCount(0, 'constraints', $fieldMapping);
+    }
+
+    public function testDecimalFactoryWithConstraints()
+    {
+        $fieldMapping = FieldMappingFactory::decimal('1.5', '3', '0.5');
+        $this->assertInstanceOf(FieldMapping::class, $fieldMapping);
+        $this->assertAttributeInstanceOf(DecimalFormatter::class, 'binder', $fieldMapping);
+        $this->assertAttributeCount(3, 'constraints', $fieldMapping);
+
+        $constraints = self::readAttribute($fieldMapping, 'constraints');
+
+        $this->assertAttributeEquals('1.5', 'limit', $constraints[0]);
+        $this->assertAttributeEquals('3', 'limit', $constraints[1]);
+        $this->assertAttributeEquals('0.5', 'step', $constraints[2]);
+        $this->assertAttributeEquals('1.5', 'base', $constraints[2]);
     }
 
     public function testBooleanFactory()

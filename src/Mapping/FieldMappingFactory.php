@@ -5,7 +5,11 @@ namespace DASPRiD\Formidable\Mapping;
 
 use DASPRiD\Formidable\Mapping\Constraint\EmailAddressConstraint;
 use DASPRiD\Formidable\Mapping\Constraint\MaxLengthConstraint;
+use DASPRiD\Formidable\Mapping\Constraint\MaxNumberConstraint;
 use DASPRiD\Formidable\Mapping\Constraint\MinLengthConstraint;
+use DASPRiD\Formidable\Mapping\Constraint\MinNumberConstraint;
+use DASPRiD\Formidable\Mapping\Constraint\StepNumberConstraint;
+use DASPRiD\Formidable\Mapping\Constraint\UrlConstraint;
 use DASPRiD\Formidable\Mapping\Formatter\BooleanFormatter;
 use DASPRiD\Formidable\Mapping\Formatter\DateFormatter;
 use DASPRiD\Formidable\Mapping\Formatter\DateTimeFormatter;
@@ -50,19 +54,24 @@ final class FieldMappingFactory
         return self::text()->verifying(new EmailAddressConstraint());
     }
 
-    public static function integer() : FieldMapping
+    public static function url() : FieldMapping
     {
-        return new FieldMapping(new IntegerFormatter());
+        return self::text()->verifying(new UrlConstraint());
     }
 
-    public static function float() : FieldMapping
+    public static function integer(int $min = null, int $max = null, int $step = null) : FieldMapping
     {
-        return new FieldMapping(new FloatFormatter());
+        return self::addNumberConstraints(new FieldMapping(new IntegerFormatter()), $min, $max, $step);
     }
 
-    public static function decimal() : FieldMapping
+    public static function float(float $min = null, float $max = null, float $step = null) : FieldMapping
     {
-        return new FieldMapping(new DecimalFormatter());
+        return self::addNumberConstraints(new FieldMapping(new FloatFormatter()), $min, $max, $step);
+    }
+
+    public static function decimal(string $min = null, string $max = null, string $step = null) : FieldMapping
+    {
+        return self::addNumberConstraints(new FieldMapping(new DecimalFormatter()), $min, $max, $step);
     }
 
     public static function boolean() : FieldMapping
@@ -83,6 +92,28 @@ final class FieldMappingFactory
     public static function dateTime(DateTimeZone $timeZone = null, $localTime = false) : FieldMapping
     {
         return new FieldMapping(new DateTimeFormatter($timeZone ?: self::getUtcTimeZone(), $localTime));
+    }
+
+    /**
+     * @param int|float|string $min
+     * @param int|float|string $max
+     * @param int|float|string $step
+     */
+    private static function addNumberConstraints(FieldMapping $mapping, $min, $max, $step) : FieldMapping
+    {
+        if (null !== $min) {
+            $mapping = $mapping->verifying(new MinNumberConstraint($min));
+        }
+
+        if (null !== $max) {
+            $mapping = $mapping->verifying(new MaxNumberConstraint($max));
+        }
+
+        if (null !== $step) {
+            $mapping = $mapping->verifying(new StepNumberConstraint($step, $min));
+        }
+
+        return $mapping;
     }
 
     private static function getUtcTimeZone() : DateTimeZone
