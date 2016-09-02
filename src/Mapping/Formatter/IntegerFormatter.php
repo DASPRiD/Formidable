@@ -24,7 +24,7 @@ final class IntegerFormatter implements FormatterInterface
 
         $value = $data->getValue($key);
 
-        if (!preg_match('(^-?[1-9]\d*$)', $value)) {
+        if (!preg_match('(^-?[1-9]*\d+$)', $value)) {
             return BindResult::fromFormErrors(new FormError(
                 $key,
                 'error.integer'
