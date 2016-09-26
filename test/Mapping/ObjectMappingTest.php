@@ -43,6 +43,21 @@ class ObjectMappingTest extends TestCase
         return new ObjectMapping([], 'DASPRiD\FormidableTest\Mapping\NonExistentClassName');
     }
 
+    public function testWithMapping()
+    {
+        $fooMapping = $this->getMockedMapping('foo');
+        $barMapping = $this->getMockedMapping('bar');
+
+        $objectMapping = (new ObjectMapping([
+            'foo' => $fooMapping,
+        ], SimpleObject::class))->withMapping('bar', $barMapping);
+
+        $this->assertAttributeSame([
+            'foo' => $fooMapping,
+            'bar' => $barMapping,
+        ], 'mappings', $objectMapping);
+    }
+
     public function testUnbindNonMatchingClass()
     {
         $mapping = (new ObjectMapping([], stdClass::class));
@@ -156,17 +171,24 @@ class ObjectMappingTest extends TestCase
         return new ObjectMapping([], stdClass::class);
     }
 
-    private function getMockedMapping(string $key, string $value, Data $data = null, $success = true) : MappingInterface
-    {
+    private function getMockedMapping(
+        string $key,
+        string $value = null,
+        Data $data = null,
+        $success = true
+    ) : MappingInterface {
         $mapping = $this->prophesize(MappingInterface::class);
-        $mapping->unbind($value)->willReturn(Data::fromFlatArray([$key => $value]));
 
-        if (null !== $data) {
-            if ($success) {
-                $mapping->bind($data)->willReturn(BindResult::fromValue($value));
-            } else {
-                $mapping->bind($data)->willReturn(BindResult::fromFormErrors(new FormError($key, $value)));
-            }
+        if (null !== $value) {
+            $mapping->unbind($value)->willReturn(Data::fromFlatArray([$key => $value]));
+        }
+
+        if (null !== $value && null !== $data) {
+            $mapping->bind($data)->willReturn(
+                $success
+                ? BindResult::fromValue($value)
+                : BindResult::fromFormErrors(new FormError($key, $value))
+            );
         }
 
         $mapping->withPrefixAndRelativeKey('', $key)->willReturn($mapping->reveal());

@@ -80,6 +80,14 @@ final class ObjectMapping implements MappingInterface
         $this->unapply = $unapply;
     }
 
+    public function withMapping(string $key, MappingInterface $mapping) : self
+    {
+        $clone = clone $this;
+        $clone->mappings[$key] = $mapping->withPrefixAndRelativeKey($clone->key, $key);
+
+        return $clone;
+    }
+
     public function bind(Data $data) : BindResult
     {
         $arguments = [];
