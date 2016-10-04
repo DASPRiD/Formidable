@@ -36,7 +36,12 @@ final class Select
     private function addOptions(DOMDocument $document, DOMNode $node, array $options, array $selectedValues)
     {
         foreach ($options as $value => $label) {
-            Assertion::string($value);
+            if (is_int($value)) {
+                $value = (string) $value;
+            } else {
+                Assertion::string($value);
+            }
+
             Assertion::true(is_string($label) || is_array($label));
 
             if (is_array($label)) {

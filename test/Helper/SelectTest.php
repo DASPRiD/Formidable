@@ -27,6 +27,19 @@ class SelectTest extends TestCase
         );
     }
 
+    public function testIntegerKeys()
+    {
+        $helper = new Select();
+        $this->assertSame(
+            "<select id=\"input.foo\" name=\"foo\"><option value=\"1\">bar</option>\n"
+            . "<option value=\"2\">baz</option></select>",
+            $helper(
+                new Field('foo', '', new FormErrorSequence(), Data::none()),
+                ['1' => 'bar', 2 => 'baz']
+            )
+        );
+    }
+
     public function testSingleSelectedValue()
     {
         $helper = new Select();
