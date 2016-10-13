@@ -39,7 +39,7 @@ final class IntegerFormatter implements FormatterInterface
      */
     public function unbind(string $key, $value) : Data
     {
-        Assertion::integer($value);
+        Assertion::integer($value, Utility::createIntegerAssertionExceptionMessage($value, $key));
         return Data::fromFlatArray([$key => (string) $value]);
     }
 }

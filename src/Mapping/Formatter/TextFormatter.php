@@ -30,7 +30,7 @@ final class TextFormatter implements FormatterInterface
      */
     public function unbind(string $key, $value) : Data
     {
-        Assertion::string($value);
+        Assertion::string($value, Utility::createStringAssertionExceptionMessage($value, $key));
         return Data::fromFlatArray([$key => $value]);
     }
 }
