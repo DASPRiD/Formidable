@@ -10,7 +10,7 @@ use DASPRiD\Formidable\Mapping\MappingInterface;
 use DASPRiD\Formidable\Transformer\TrimTransformer;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class Form
+final class Form implements FormInterface
 {
     /**
      * @var MappingInterface
@@ -39,7 +39,7 @@ final class Form
         $this->errors = new FormErrorSequence();
     }
 
-    public function fill($formData) : self
+    public function fill($formData) : FormInterface
     {
         $form = clone $this;
         $form->data = $this->mapping->unbind($formData);
@@ -47,7 +47,7 @@ final class Form
         return $form;
     }
 
-    public function bind(Data $data) : self
+    public function bind(Data $data) : FormInterface
     {
         $form = clone $this;
         $form->data = $data;
@@ -63,7 +63,7 @@ final class Form
         return $form;
     }
 
-    public function bindFromRequest(ServerRequestInterface $request, bool $trimData = true) : self
+    public function bindFromRequest(ServerRequestInterface $request, bool $trimData = true) : FormInterface
     {
         if ('POST' === $request->getMethod()) {
             $data = Data::fromNestedArray($request->getParsedBody());
@@ -78,14 +78,14 @@ final class Form
         return $this->bind($data);
     }
 
-    public function withError(FormError $formError) : self
+    public function withError(FormError $formError) : FormInterface
     {
         $form = clone $this;
         $form->errors = $form->errors->merge(new FormErrorSequence($formError));
         return $form;
     }
 
-    public function withGlobalError(string $message, array $arguments = []) : self
+    public function withGlobalError(string $message, array $arguments = []) : FormInterface
     {
         return $this->withError(new FormError('', $message, $arguments));
     }
