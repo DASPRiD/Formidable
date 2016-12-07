@@ -27,6 +27,7 @@ class ErrorFormatterTest extends TestCase
     {
         return [
             'error.required' => ['error.required', 'This field is required'],
+            'error.empty' => ['error.empty', 'Value must not be empty'],
             'error.integer' => ['error.integer', 'Integer value expected'],
             'error.float' => ['error.float', 'Float value expected'],
             'error.boolean' => ['error.boolean', 'Boolean value expected'],
