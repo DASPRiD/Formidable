@@ -3,7 +3,9 @@ declare(strict_types = 1);
 
 namespace DASPRiD\FormidableTest\Mapping;
 
+use DASPRiD\Formidable\Mapping\Constraint\ChainConstraint;
 use DASPRiD\Formidable\Mapping\Constraint\EmailAddressConstraint;
+use DASPRiD\Formidable\Mapping\Constraint\NotEmptyConstraint;
 use DASPRiD\Formidable\Mapping\Constraint\UrlConstraint;
 use DASPRiD\Formidable\Mapping\FieldMapping;
 use DASPRiD\Formidable\Mapping\FieldMappingFactory;
@@ -45,6 +47,43 @@ class FieldMappingFactoryTest extends TestCase
 
         $this->assertAttributeSame('iso-8859-15', 'encoding', $constraints[1]);
         $this->assertAttributeSame(2, 'lengthLimit', $constraints[1]);
+    }
+
+    public function testNonEmptyTextFactoryWithoutConstraints()
+    {
+        $fieldMapping = FieldMappingFactory::nonEmptyText();
+        $this->assertInstanceOf(FieldMapping::class, $fieldMapping);
+        $this->assertAttributeInstanceOf(TextFormatter::class, 'binder', $fieldMapping);
+        $this->assertAttributeCount(1, 'constraints', $fieldMapping);
+
+        $constraints = self::readAttribute($fieldMapping, 'constraints');
+        $this->assertInstanceOf(ChainConstraint::class, $constraints[0]);
+        $this->assertAttributeSame(true, 'breakChainOnFailure', $constraints[0]);
+        $this->assertAttributeCount(1, 'constraints', $constraints[0]);
+
+        $chainConstraints = self::readAttribute($constraints[0], 'constraints');
+
+        $this->assertInstanceOf(NotEmptyConstraint::class, $chainConstraints[0]);
+    }
+
+    public function testNonEmptyTextFactoryWithConstraints()
+    {
+        $fieldMapping = FieldMappingFactory::nonEmptyText(2, 'iso-8859-15');
+        $this->assertInstanceOf(FieldMapping::class, $fieldMapping);
+        $this->assertAttributeInstanceOf(TextFormatter::class, 'binder', $fieldMapping);
+        $this->assertAttributeCount(1, 'constraints', $fieldMapping);
+
+        $constraints = self::readAttribute($fieldMapping, 'constraints');
+        $this->assertInstanceOf(ChainConstraint::class, $constraints[0]);
+        $this->assertAttributeSame(true, 'breakChainOnFailure', $constraints[0]);
+        $this->assertAttributeCount(2, 'constraints', $constraints[0]);
+
+        $chainConstraints = self::readAttribute($constraints[0], 'constraints');
+
+        $this->assertInstanceOf(NotEmptyConstraint::class, $chainConstraints[0]);
+
+        $this->assertAttributeSame('iso-8859-15', 'encoding', $chainConstraints[1]);
+        $this->assertAttributeSame(2, 'lengthLimit', $chainConstraints[1]);
     }
 
     public function testEmailAddressFactory()

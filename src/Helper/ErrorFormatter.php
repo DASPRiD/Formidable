@@ -11,6 +11,7 @@ final class ErrorFormatter
 {
     const BUILD_IN_MESSAGES = [
         'error.required' => 'This field is required',
+        'error.empty' => 'Value must not be empty',
         'error.integer' => 'Integer value expected',
         'error.float' => 'Float value expected',
         'error.boolean' => 'Boolean value expected',

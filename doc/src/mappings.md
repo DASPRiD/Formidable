@@ -89,6 +89,10 @@ mappings:
 `text(int $minLength = 0, int $maxLength = null, string $encoding = 'utf-8')`
 :   Creates a simple string-to-string mapping, optionally applying constraints for the length of the string.
 
+`nonEmptyText(int $maxLength = null, string $encoding = 'utf-8')`
+:   Creates a simple string-to-string mapping which requires the input to be a non-empty string, optionally applying
+    constraints for the max length of the string.
+
 `emailAddress()`
 :   Creates a mapping which requires the input string to be a valid email address.
 
