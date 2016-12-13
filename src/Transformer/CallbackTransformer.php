@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Transformer;
 
-class CallbackTransformer implements TransformerInterface
+final class CallbackTransformer implements TransformerInterface
 {
     /**
      * @var callable

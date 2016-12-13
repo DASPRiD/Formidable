@@ -5,7 +5,7 @@ namespace DASPRiD\Formidable\Exception;
 
 use DomainException;
 
-class InvalidValue extends DomainException implements ExceptionInterface
+final class InvalidValueException extends DomainException implements ExceptionInterface
 {
     public static function fromArrayWithNonStringValues(array $array)
     {

@@ -3,16 +3,24 @@ declare(strict_types = 1);
 
 namespace DASPRiD\FormidableTest\Mapping;
 
-use Assert\AssertionFailedException;
 use DASPRiD\Formidable\Data;
 use DASPRiD\Formidable\FormError\FormError;
 use DASPRiD\Formidable\Mapping\BindResult;
 use DASPRiD\Formidable\Mapping\Constraint\ConstraintInterface;
 use DASPRiD\Formidable\Mapping\Constraint\ValidationError;
 use DASPRiD\Formidable\Mapping\Constraint\ValidationResult;
+use DASPRiD\Formidable\Mapping\Exception\BindFailureException;
+use DASPRiD\Formidable\Mapping\Exception\InvalidMappingException;
+use DASPRiD\Formidable\Mapping\Exception\InvalidMappingKeyException;
+use DASPRiD\Formidable\Mapping\Exception\InvalidUnapplyResultException;
+use DASPRiD\Formidable\Mapping\Exception\MappedClassMismatchException;
+use DASPRiD\Formidable\Mapping\Exception\NonExistentMappedClassException;
+use DASPRiD\Formidable\Mapping\Exception\NonExistentUnapplyKeyException;
+use DASPRiD\Formidable\Mapping\Exception\UnbindFailureException;
 use DASPRiD\Formidable\Mapping\MappingInterface;
 use DASPRiD\Formidable\Mapping\ObjectMapping;
 use DASPRiD\FormidableTest\Mapping\TestAsset\SimpleObject;
+use Exception;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use stdClass;
@@ -27,19 +35,19 @@ class ObjectMappingTest extends TestCase
 
     public function testConstructionWithInvalidMappingKey()
     {
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidMappingKeyException::class);
         return new ObjectMapping([1 => $this->prophesize(MappingInterface::class)->reveal()], stdClass::class);
     }
 
     public function testConstructionWithInvalidMapping()
     {
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidMappingException::class);
         return new ObjectMapping(['foo' => 'bar'], stdClass::class);
     }
 
     public function testConstructionWithNonExistentClassName()
     {
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(NonExistentMappedClassException::class);
         return new ObjectMapping([], 'DASPRiD\FormidableTest\Mapping\NonExistentClassName');
     }
 
@@ -61,7 +69,7 @@ class ObjectMappingTest extends TestCase
     public function testUnbindNonMatchingClass()
     {
         $mapping = (new ObjectMapping([], stdClass::class));
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(MappedClassMismatchException::class);
         $mapping->unbind('foo');
     }
 
@@ -93,6 +101,22 @@ class ObjectMappingTest extends TestCase
         $this->assertSame('bat', iterator_to_array($bindResult->getFormErrorSequence())[0]->getMessage());
     }
 
+    public function testExceptionOnBind()
+    {
+        $data = Data::fromFlatArray(['foo' => 'bar']);
+
+        $mapping = $this->prophesize(MappingInterface::class);
+        $mapping->bind($data)->willThrow(new Exception('test'));
+        $mapping->withPrefixAndRelativeKey('', 'foo')->willReturn($mapping->reveal());
+
+        $objectMapping = new ObjectMapping([
+            'foo' => $mapping->reveal(),
+        ], SimpleObject::class);
+
+        $this->expectException(BindFailureException::class);
+        $objectMapping->bind($data);
+    }
+
     public function testBindAppliesConstraints()
     {
         $constraint = $this->prophesize(ConstraintInterface::class);
@@ -111,6 +135,15 @@ class ObjectMappingTest extends TestCase
         $formError = iterator_to_array($bindResult->getFormErrorSequence())[0];
         $this->assertSame('error', $formError->getMessage());
         $this->assertSame('foo[bar]', $formError->getKey());
+    }
+
+    public function testInvalidApplyReturnValue()
+    {
+        $objectMapping = new ObjectMapping([], SimpleObject::class, function () {
+            return null;
+        });
+        $this->expectException(MappedClassMismatchException::class);
+        $objectMapping->bind(Data::none());
     }
 
     public function testUnbindObject()
@@ -133,8 +166,22 @@ class ObjectMappingTest extends TestCase
             'none' => $this->getMockedMapping('none', 'none'),
         ], SimpleObject::class);
 
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(NonExistentUnapplyKeyException::class);
         $objectMapping->unbind(new SimpleObject('baz', 'bat'));
+    }
+
+    public function testExceptionOnUnbind()
+    {
+        $mapping = $this->prophesize(MappingInterface::class);
+        $mapping->unbind('bar')->willThrow(new Exception('test'));
+        $mapping->withPrefixAndRelativeKey('', 'foo')->willReturn($mapping->reveal());
+
+        $objectMapping = new ObjectMapping([
+            'foo' => $mapping->reveal(),
+        ], SimpleObject::class);
+
+        $this->expectException(UnbindFailureException::class);
+        $objectMapping->unbind(new SimpleObject('bar', ''));
     }
 
     public function testInvalidUnapplyReturnValue()
@@ -142,7 +189,7 @@ class ObjectMappingTest extends TestCase
         $objectMapping = new ObjectMapping([], SimpleObject::class, null, function () {
             return null;
         });
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidUnapplyResultException::class);
         $objectMapping->unbind(new SimpleObject('', ''));
     }
 

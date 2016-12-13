@@ -4,9 +4,9 @@ declare(strict_types = 1);
 namespace DASPRiD\FormidableTest;
 
 use DASPRiD\Formidable\Data;
-use DASPRiD\Formidable\Exception\InvalidKey;
-use DASPRiD\Formidable\Exception\InvalidValue;
-use DASPRiD\Formidable\Exception\NonExistentKey;
+use DASPRiD\Formidable\Exception\InvalidKeyException;
+use DASPRiD\Formidable\Exception\InvalidValueException;
+use DASPRiD\Formidable\Exception\NonExistentKeyException;
 use DASPRiD\Formidable\Transformer\TransformerInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -29,7 +29,7 @@ class DataTest extends TestCase
 
     public function testGetValueThrowsExceptionWithoutFallback()
     {
-        $this->expectException(NonExistentKey::class);
+        $this->expectException(NonExistentKeyException::class);
         $data = Data::none();
         $data->getValue('foo');
     }
@@ -84,13 +84,13 @@ class DataTest extends TestCase
 
     public function testCreateFromFlatArrayWithInvalidKey()
     {
-        $this->expectException(InvalidKey::class);
+        $this->expectException(InvalidKeyException::class);
         Data::fromFlatArray([0 => 'foo']);
     }
 
     public function testCreateFromFlatArrayWithInvalidValue()
     {
-        $this->expectException(InvalidValue::class);
+        $this->expectException(InvalidValueException::class);
         Data::fromFlatArray(['foo' => 0]);
     }
 
@@ -108,13 +108,13 @@ class DataTest extends TestCase
 
     public function testCreateFromNestedArrayWithInvalidValue()
     {
-        $this->expectException(InvalidValue::class);
+        $this->expectException(InvalidValueException::class);
         Data::fromNestedArray(['foo' => 1]);
     }
 
     public function testCreateFromNestedArrayWithRootIntegerKey()
     {
-        $this->expectException(InvalidKey::class);
+        $this->expectException(InvalidKeyException::class);
         Data::fromNestedArray([0 => 'foo']);
     }
 

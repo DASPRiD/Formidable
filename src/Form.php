@@ -3,7 +3,8 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable;
 
-use Assert\Assertion;
+use DASPRiD\Formidable\Exception\InvalidDataException;
+use DASPRiD\Formidable\Exception\UnboundDataException;
 use DASPRiD\Formidable\FormError\FormError;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
 use DASPRiD\Formidable\Mapping\MappingInterface;
@@ -92,7 +93,14 @@ final class Form implements FormInterface
 
     public function getValue()
     {
-        Assertion::true($this->errors->isEmpty(), 'Value cannot be retrieved when the form has errors');
+        if (!$this->errors->isEmpty()) {
+            throw InvalidDataException::fromGetValueAttempt();
+        }
+
+        if (null === $this->value) {
+            throw UnboundDataException::fromGetValueAttempt();
+        }
+
         return $this->value;
     }
 

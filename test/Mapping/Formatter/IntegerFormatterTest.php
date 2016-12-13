@@ -3,8 +3,8 @@ declare(strict_types = 1);
 
 namespace DASPRiD\FormidableTest\Mapping\Formatter;
 
-use Assert\AssertionFailedException;
 use DASPRiD\Formidable\Data;
+use DASPRiD\Formidable\Mapping\Formatter\Exception\InvalidTypeException;
 use DASPRiD\Formidable\Mapping\Formatter\IntegerFormatter;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -76,7 +76,7 @@ class IntegerFormatterTest extends TestCase
 
     public function testUnbindInvalidFloatValue()
     {
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidTypeException::class);
         (new IntegerFormatter())->unbind('foo', 1.1);
     }
 }

@@ -5,7 +5,7 @@ namespace DASPRiD\Formidable\Exception;
 
 use DomainException;
 
-class InvalidKey extends DomainException implements ExceptionInterface
+final class InvalidKeyException extends DomainException implements ExceptionInterface
 {
     public static function fromArrayWithNonStringKeys(array $array)
     {

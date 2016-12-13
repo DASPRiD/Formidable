@@ -3,10 +3,11 @@ declare(strict_types = 1);
 
 namespace DASPRiD\FormidableTest\Mapping;
 
-use Assert\AssertionFailedException;
 use DASPRiD\Formidable\FormError\FormError;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
 use DASPRiD\Formidable\Mapping\BindResult;
+use DASPRiD\Formidable\Mapping\Exception\InvalidBindResultException;
+use DASPRiD\Formidable\Mapping\Exception\ValidBindResultException;
 use DASPRiD\FormidableTest\FormError\FormErrorAssertion;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -20,7 +21,7 @@ class BindResultTest extends TestCase
         $bindResult = BindResult::fromValue('foo');
         $this->assertTrue($bindResult->isSuccess());
         $this->assertSame('foo', $bindResult->getValue());
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(ValidBindResultException::class);
         $bindResult->getFormErrorSequence();
     }
 
@@ -35,7 +36,7 @@ class BindResultTest extends TestCase
                 'foo' => 'bar',
             ]
         );
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidBindResultException::class);
         $bindResult->getValue();
     }
 
@@ -50,7 +51,7 @@ class BindResultTest extends TestCase
                 'foo' => 'bar',
             ]
         );
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidBindResultException::class);
         $bindResult->getValue();
     }
 }

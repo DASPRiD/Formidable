@@ -18,12 +18,12 @@ final class ValidationResult
         $this->validationErrors = $validationErrors;
     }
 
-    public function isSuccess()
+    public function isSuccess() : bool
     {
         return empty($this->validationErrors);
     }
 
-    public function merge(self $other)
+    public function merge(self $other) : self
     {
         $validationResult = clone $this;
         $validationResult->validationErrors = array_merge($this->validationErrors, $other->validationErrors);

@@ -3,11 +3,19 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Mapping;
 
-use Assert\Assertion;
 use DASPRiD\Formidable\Data;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
+use DASPRiD\Formidable\Mapping\Exception\BindFailureException;
+use DASPRiD\Formidable\Mapping\Exception\InvalidMappingException;
+use DASPRiD\Formidable\Mapping\Exception\InvalidMappingKeyException;
+use DASPRiD\Formidable\Mapping\Exception\InvalidUnapplyResultException;
+use DASPRiD\Formidable\Mapping\Exception\MappedClassMismatchException;
+use DASPRiD\Formidable\Mapping\Exception\NonExistentMappedClassException;
+use DASPRiD\Formidable\Mapping\Exception\NonExistentUnapplyKeyException;
+use DASPRiD\Formidable\Mapping\Exception\UnbindFailureException;
 use ReflectionClass;
 use ReflectionProperty;
+use Throwable;
 
 final class ObjectMapping implements MappingInterface
 {
@@ -44,13 +52,20 @@ final class ObjectMapping implements MappingInterface
     public function __construct(array $mappings, string $className, callable $apply = null, callable $unapply = null)
     {
         foreach ($mappings as $mappingKey => $mapping) {
-            Assertion::string($mappingKey);
-            Assertion::isInstanceOf($mapping, MappingInterface::class);
+            if (!is_string($mappingKey)) {
+                throw InvalidMappingKeyException::fromInvalidMappingKey($mappingKey);
+            }
+
+            if (!$mapping instanceof MappingInterface) {
+                throw InvalidMappingException::fromInvalidMapping($mapping);
+            }
 
             $this->mappings[$mappingKey] = $mapping->withPrefixAndRelativeKey($this->key, $mappingKey);
         }
 
-        Assertion::classExists($className);
+        if (!class_exists($className)) {
+            throw NonExistentMappedClassException::fromNonExistentClass($className);
+        }
 
         if (null === $apply) {
             $apply = function (...$arguments) {
@@ -60,7 +75,9 @@ final class ObjectMapping implements MappingInterface
 
         if (null === $unapply) {
             $unapply = function ($value) {
-                Assertion::isInstanceOf($value, $this->className);
+                if (!$value instanceof $this->className) {
+                    throw MappedClassMismatchException::fromMismatchedClass($this->className, $value);
+                }
 
                 $values = [];
                 $reflectionClass = new ReflectionClass($this->className);
@@ -94,7 +111,11 @@ final class ObjectMapping implements MappingInterface
         $formErrorSequence = new FormErrorSequence();
 
         foreach ($this->mappings as $key => $mapping) {
-            $bindResult = $mapping->bind($data);
+            try {
+                $bindResult = $mapping->bind($data);
+            } catch (Throwable $e) {
+                throw BindFailureException::fromBindException($key, $e);
+            }
 
             if (!$bindResult->isSuccess()) {
                 $formErrorSequence = $formErrorSequence->merge($bindResult->getFormErrorSequence());
@@ -111,7 +132,9 @@ final class ObjectMapping implements MappingInterface
         $apply = $this->apply;
         $value = $apply(...array_values($arguments));
 
-        Assertion::isInstanceOf($value, $this->className);
+        if (!$value instanceof $this->className) {
+            throw MappedClassMismatchException::fromMismatchedClass($this->className, $value);
+        }
 
         return $this->applyConstraints($value, $this->key);
     }
@@ -121,11 +144,21 @@ final class ObjectMapping implements MappingInterface
         $data = Data::none();
         $unapply = $this->unapply;
         $values = $unapply($value);
-        Assertion::isArray($values);
+
+        if (!is_array($values)) {
+            throw InvalidUnapplyResultException::fromInvalidUnapplyResult($values);
+        }
 
         foreach ($this->mappings as $key => $mapping) {
-            Assertion::keyExists($values, $key);
-            $data = $data->merge($mapping->unbind($values[$key]));
+            if (!array_key_exists($key, $values)) {
+                throw NonExistentUnapplyKeyException::fromNonExistentUnapplyKey($key);
+            }
+
+            try {
+                $data = $data->merge($mapping->unbind($values[$key]));
+            } catch (Throwable $e) {
+                throw UnbindFailureException::fromUnbindException($key, $e);
+            }
         }
 
         return $data;

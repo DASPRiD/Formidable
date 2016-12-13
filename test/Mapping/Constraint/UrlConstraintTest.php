@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace DASPRiD\FormidableTest\Mapping\Constraint;
 
-use Assert\AssertionFailedException;
+use DASPRiD\Formidable\Mapping\Constraint\Exception\InvalidTypeException;
 use DASPRiD\Formidable\Mapping\Constraint\UrlConstraint;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -15,7 +15,7 @@ class UrlConstraintTest extends TestCase
     public function testAssertionWithInvalidValueType()
     {
         $constraint = new UrlConstraint();
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidTypeException::class);
         $constraint(1);
     }
 

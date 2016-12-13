@@ -3,8 +3,8 @@ declare(strict_types = 1);
 
 namespace DASPRiD\FormidableTest\Mapping\Formatter;
 
-use Assert\AssertionFailedException;
 use DASPRiD\Formidable\Data;
+use DASPRiD\Formidable\Mapping\Formatter\Exception\InvalidTypeException;
 use DASPRiD\Formidable\Mapping\Formatter\TimeFormatter;
 use DateTimeImmutable;
 use DateTimeZone;
@@ -96,7 +96,7 @@ class TimeFormatterTest extends TestCase
 
     public function testUnbindInvalidStringValue()
     {
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidTypeException::class);
         (new TimeFormatter(new DateTimeZone('UTC')))->unbind('foo', '00:00:00');
     }
 }

@@ -3,10 +3,10 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Mapping\Formatter;
 
-use Assert\Assertion;
 use DASPRiD\Formidable\Data;
 use DASPRiD\Formidable\FormError\FormError;
 use DASPRiD\Formidable\Mapping\BindResult;
+use DASPRiD\Formidable\Mapping\Formatter\Exception\InvalidTypeException;
 
 final class TextFormatter implements FormatterInterface
 {
@@ -30,7 +30,10 @@ final class TextFormatter implements FormatterInterface
      */
     public function unbind(string $key, $value) : Data
     {
-        Assertion::string($value);
+        if (!is_string($value)) {
+            throw InvalidTypeException::fromInvalidType($value, 'string');
+        }
+
         return Data::fromFlatArray([$key => $value]);
     }
 }

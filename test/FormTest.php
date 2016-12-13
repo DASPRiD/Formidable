@@ -3,8 +3,9 @@ declare(strict_types = 1);
 
 namespace DASPRiD\FormidableTest;
 
-use Assert\AssertionFailedException;
 use DASPRiD\Formidable\Data;
+use DASPRiD\Formidable\Exception\InvalidDataException;
+use DASPRiD\Formidable\Exception\UnboundDataException;
 use DASPRiD\Formidable\Form;
 use DASPRiD\Formidable\FormError\FormError;
 use DASPRiD\Formidable\Mapping\BindResult;
@@ -51,7 +52,14 @@ class FormTest extends TestCase
 
         $this->assertTrue($form->hasErrors());
         $this->assertSame('foo', iterator_to_array($form->getGlobalErrors())[0]->getMessage());
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidDataException::class);
+        $form->getValue();
+    }
+
+    public function testExceptionOnGetValueWithoutBoundData()
+    {
+        $form = new Form($this->prophesize(MappingInterface::class)->reveal());
+        $this->expectException(UnboundDataException::class);
         $form->getValue();
     }
 

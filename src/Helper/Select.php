@@ -3,8 +3,9 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Helper;
 
-use Assert\Assertion;
 use DASPRiD\Formidable\Field;
+use DASPRiD\Formidable\Helper\Exception\InvalidSelectLabelException;
+use DASPRiD\Formidable\Helper\Exception\InvalidSelectValueException;
 use DOMDocument;
 use DOMNode;
 
@@ -38,11 +39,11 @@ final class Select
         foreach ($options as $value => $label) {
             if (is_int($value)) {
                 $value = (string) $value;
-            } else {
-                Assertion::string($value);
             }
 
-            Assertion::true(is_string($label) || is_array($label));
+            if (!is_string($label) && !is_array($label)) {
+                throw InvalidSelectLabelException::fromInvalidLabel($label);
+            }
 
             if (is_array($label)) {
                 $optgroup = $document->createElement('optgroup');

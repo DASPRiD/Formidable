@@ -3,8 +3,8 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Helper;
 
-use Assert\Assertion;
-use DASPRiD\Formidable\Helper\Exception\NonExistentMessage;
+use DASPRiD\Formidable\Helper\Exception\NonExistentMessageException;
+use DASPRiD\Formidable\Mapping\Constraint\Exception\MissingIntlExtensionException;
 use MessageFormatter;
 
 final class ErrorFormatter
@@ -33,14 +33,19 @@ final class ErrorFormatter
 
     public function __construct(array $messages = [])
     {
-        Assertion::classExists(MessageFormatter::class);
+        if (!class_exists(MessageFormatter::class)) {
+            // @codeCoverageIgnoreStart
+            throw MissingIntlExtensionException::fromMissingExtension();
+            // @codeCoverageIgnoreEnd
+        }
+
         $this->messages = array_replace(self::BUILD_IN_MESSAGES, $messages);
     }
 
     public function __invoke(string $key, array $arguments = []) : string
     {
         if (!array_key_exists($key, $this->messages)) {
-            throw NonExistentMessage::fromNonExistentMessageKey($key);
+            throw NonExistentMessageException::fromNonExistentMessageKey($key);
         }
 
         return MessageFormatter::formatMessage('en-US', $this->messages[$key], $arguments);

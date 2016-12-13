@@ -3,13 +3,15 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Mapping\Constraint;
 
-use Assert\Assertion;
+use DASPRiD\Formidable\Mapping\Constraint\Exception\InvalidTypeException;
 
-class UrlConstraint implements ConstraintInterface
+final class UrlConstraint implements ConstraintInterface
 {
     public function __invoke($value) : ValidationResult
     {
-        Assertion::string($value);
+        if (!is_string($value)) {
+            throw InvalidTypeException::fromInvalidType($value, 'string');
+        }
 
         if (false === filter_var($value, FILTER_VALIDATE_URL)) {
             return new ValidationResult(new ValidationError('error.url'));

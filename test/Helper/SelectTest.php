@@ -6,6 +6,7 @@ namespace DASPRiD\FormidableTest\Helper;
 use DASPRiD\Formidable\Data;
 use DASPRiD\Formidable\Field;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
+use DASPRiD\Formidable\Helper\Exception\InvalidSelectLabelException;
 use DASPRiD\Formidable\Helper\Select;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -82,6 +83,16 @@ class SelectTest extends TestCase
                 new Field('foo', '', new FormErrorSequence(), Data::none()),
                 ['foo' => 'bar', 'baz' => ['bat' => 'a']]
             )
+        );
+    }
+
+    public function testExceptionOnInvalidLabel()
+    {
+        $helper = new Select();
+        $this->expectException(InvalidSelectLabelException::class);
+        $helper(
+            new Field('foo', '', new FormErrorSequence(), Data::none()),
+            ['foo' => true]
         );
     }
 }

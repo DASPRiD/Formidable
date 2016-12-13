@@ -3,9 +3,9 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable;
 
-use DASPRiD\Formidable\Exception\InvalidKey;
-use DASPRiD\Formidable\Exception\InvalidValue;
-use DASPRiD\Formidable\Exception\NonExistentKey;
+use DASPRiD\Formidable\Exception\InvalidKeyException;
+use DASPRiD\Formidable\Exception\InvalidValueException;
+use DASPRiD\Formidable\Exception\NonExistentKeyException;
 use DASPRiD\Formidable\Transformer\TransformerInterface;
 
 final class Data
@@ -25,20 +25,16 @@ final class Data
         return new self([]);
     }
 
-    /**
-     * @throws InvalidKey When a non-string key is encountered
-     * @throws InvalidValue When a non-string value is encountered
-     */
     public static function fromFlatArray(array $flatArray) : self
     {
         $originalCount = count($flatArray);
 
         if ($originalCount > count(array_filter($flatArray, 'is_string', ARRAY_FILTER_USE_KEY))) {
-            throw InvalidKey::fromArrayWithNonStringKeys($flatArray);
+            throw InvalidKeyException::fromArrayWithNonStringKeys($flatArray);
         }
 
         if ($originalCount > count(array_filter($flatArray, 'is_string'))) {
-            throw InvalidValue::fromArrayWithNonStringValues($flatArray);
+            throw InvalidValueException::fromArrayWithNonStringValues($flatArray);
         }
 
         return new self($flatArray);
@@ -81,9 +77,6 @@ final class Data
         return array_key_exists($key, $this->data);
     }
 
-    /**
-     * @throws NonExistentKey When the key cannot be found and no fallback is defined
-     */
     public function getValue(string $key, string $fallback = null) : string
     {
         if (array_key_exists($key, $this->data)) {
@@ -94,7 +87,7 @@ final class Data
             return $fallback;
         }
 
-        throw NonExistentKey::fromNonExistentKey($key);
+        throw NonExistentKeyException::fromNonExistentKey($key);
     }
 
     public function getIndexes(string $key) : array
@@ -119,17 +112,13 @@ final class Data
         return empty($this->data);
     }
 
-    /**
-     * @throws InvalidKey When an invalid key is encountered
-     * @throws InvalidValue When an invalid value is encountered
-     */
     private static function flattenNestedArray(array $nestedArray, string $prefix = '') : array
     {
         $flatArray = [];
 
         foreach ($nestedArray as $key => $value) {
             if (!is_string($key) && ('' === $prefix || !is_int($key))) {
-                throw InvalidKey::fromNonNestedKey($key);
+                throw InvalidKeyException::fromNonNestedKey($key);
             }
 
             if ('' !== $prefix) {
@@ -146,7 +135,7 @@ final class Data
                 continue;
             }
 
-            throw InvalidValue::fromNonNestedValue($value);
+            throw InvalidValueException::fromNonNestedValue($value);
         }
 
         return $flatArray;

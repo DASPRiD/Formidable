@@ -3,8 +3,8 @@ declare(strict_types = 1);
 
 namespace DASPRiD\FormidableTest\Mapping\Constraint;
 
-use Assert\AssertionFailedException;
 use DASPRiD\Formidable\Mapping\Constraint\NotEmptyConstraint;
+use DASPRiD\Formidable\Mapping\Formatter\Exception\InvalidTypeException;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
@@ -15,7 +15,7 @@ class NotEmptyConstraintTest extends TestCase
     public function testAssertionWithInvalidValueType()
     {
         $constraint = new NotEmptyConstraint();
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidTypeException::class);
         $constraint(1);
     }
 
