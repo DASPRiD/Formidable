@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace DASPRiD\FormidableTest\Mapping;
 
-use DASPRiD\Formidable\Mapping\Constraint\ChainConstraint;
 use DASPRiD\Formidable\Mapping\Constraint\EmailAddressConstraint;
 use DASPRiD\Formidable\Mapping\Constraint\NotEmptyConstraint;
 use DASPRiD\Formidable\Mapping\Constraint\UrlConstraint;
@@ -14,6 +13,7 @@ use DASPRiD\Formidable\Mapping\Formatter\DateFormatter;
 use DASPRiD\Formidable\Mapping\Formatter\DateTimeFormatter;
 use DASPRiD\Formidable\Mapping\Formatter\DecimalFormatter;
 use DASPRiD\Formidable\Mapping\Formatter\FloatFormatter;
+use DASPRiD\Formidable\Mapping\Formatter\IgnoredFormatter;
 use DASPRiD\Formidable\Mapping\Formatter\IntegerFormatter;
 use DASPRiD\Formidable\Mapping\Formatter\TextFormatter;
 use DASPRiD\Formidable\Mapping\Formatter\TimeFormatter;
@@ -25,6 +25,14 @@ use PHPUnit_Framework_TestCase as TestCase;
  */
 class FieldMappingFactoryTest extends TestCase
 {
+    public function testIgnoredFactory()
+    {
+        $fieldMapping = FieldMappingFactory::ignored('foo');
+        $this->assertInstanceOf(FieldMapping::class, $fieldMapping);
+        $this->assertAttributeInstanceOf(IgnoredFormatter::class, 'binder', $fieldMapping);
+        $this->assertAttributeCount(0, 'constraints', $fieldMapping);
+    }
+
     public function testTextFactoryWithoutConstraints()
     {
         $fieldMapping = FieldMappingFactory::text();
@@ -57,33 +65,26 @@ class FieldMappingFactoryTest extends TestCase
         $this->assertAttributeCount(1, 'constraints', $fieldMapping);
 
         $constraints = self::readAttribute($fieldMapping, 'constraints');
-        $this->assertInstanceOf(ChainConstraint::class, $constraints[0]);
-        $this->assertAttributeSame(true, 'breakChainOnFailure', $constraints[0]);
-        $this->assertAttributeCount(1, 'constraints', $constraints[0]);
 
-        $chainConstraints = self::readAttribute($constraints[0], 'constraints');
-
-        $this->assertInstanceOf(NotEmptyConstraint::class, $chainConstraints[0]);
+        $this->assertInstanceOf(NotEmptyConstraint::class, $constraints[0]);
     }
 
     public function testNonEmptyTextFactoryWithConstraints()
     {
-        $fieldMapping = FieldMappingFactory::nonEmptyText(2, 'iso-8859-15');
+        $fieldMapping = FieldMappingFactory::nonEmptyText(1, 2, 'iso-8859-15');
         $this->assertInstanceOf(FieldMapping::class, $fieldMapping);
         $this->assertAttributeInstanceOf(TextFormatter::class, 'binder', $fieldMapping);
-        $this->assertAttributeCount(1, 'constraints', $fieldMapping);
+        $this->assertAttributeCount(3, 'constraints', $fieldMapping);
 
         $constraints = self::readAttribute($fieldMapping, 'constraints');
-        $this->assertInstanceOf(ChainConstraint::class, $constraints[0]);
-        $this->assertAttributeSame(true, 'breakChainOnFailure', $constraints[0]);
-        $this->assertAttributeCount(2, 'constraints', $constraints[0]);
 
-        $chainConstraints = self::readAttribute($constraints[0], 'constraints');
+        $this->assertAttributeSame('iso-8859-15', 'encoding', $constraints[0]);
+        $this->assertAttributeSame(1, 'lengthLimit', $constraints[0]);
 
-        $this->assertInstanceOf(NotEmptyConstraint::class, $chainConstraints[0]);
+        $this->assertAttributeSame('iso-8859-15', 'encoding', $constraints[1]);
+        $this->assertAttributeSame(2, 'lengthLimit', $constraints[1]);
 
-        $this->assertAttributeSame('iso-8859-15', 'encoding', $chainConstraints[1]);
-        $this->assertAttributeSame(2, 'lengthLimit', $chainConstraints[1]);
+        $this->assertInstanceOf(NotEmptyConstraint::class, $constraints[2]);
     }
 
     public function testEmailAddressFactory()
