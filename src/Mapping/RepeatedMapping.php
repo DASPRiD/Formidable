@@ -3,9 +3,9 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Mapping;
 
-use Assert\Assertion;
 use DASPRiD\Formidable\Data;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
+use DASPRiD\Formidable\Mapping\Exception\InvalidTypeException;
 
 final class RepeatedMapping implements MappingInterface
 {
@@ -54,7 +54,10 @@ final class RepeatedMapping implements MappingInterface
 
     public function unbind($value) : Data
     {
-        Assertion::isArray($value);
+        if (!is_array($value)) {
+            throw InvalidTypeException::fromInvalidType($value, 'array');
+        }
+
         $data = Data::none();
 
         foreach ($value as $index => $individualValue) {

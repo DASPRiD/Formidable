@@ -3,9 +3,14 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Mapping;
 
-use Assert\Assertion;
 use DASPRiD\Formidable\Data;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
+use DASPRiD\Formidable\Mapping\Exception\InvalidMappingException;
+use DASPRiD\Formidable\Mapping\Exception\InvalidMappingKeyException;
+use DASPRiD\Formidable\Mapping\Exception\InvalidUnapplyResultException;
+use DASPRiD\Formidable\Mapping\Exception\MappedClassMismatchException;
+use DASPRiD\Formidable\Mapping\Exception\NonExistentMappedClassException;
+use DASPRiD\Formidable\Mapping\Exception\NonExistentUnapplyKeyException;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -44,13 +49,20 @@ final class ObjectMapping implements MappingInterface
     public function __construct(array $mappings, string $className, callable $apply = null, callable $unapply = null)
     {
         foreach ($mappings as $mappingKey => $mapping) {
-            Assertion::string($mappingKey);
-            Assertion::isInstanceOf($mapping, MappingInterface::class);
+            if (!is_string($mappingKey)) {
+                throw InvalidMappingKeyException::fromInvalidMappingKey($mappingKey);
+            }
+
+            if (!$mapping instanceof MappingInterface) {
+                throw InvalidMappingException::fromInvalidMapping($mapping);
+            }
 
             $this->mappings[$mappingKey] = $mapping->withPrefixAndRelativeKey($this->key, $mappingKey);
         }
 
-        Assertion::classExists($className);
+        if (!class_exists($className)) {
+            throw NonExistentMappedClassException::fromNonExistentClass($className);
+        }
 
         if (null === $apply) {
             $apply = function (...$arguments) {
@@ -60,7 +72,9 @@ final class ObjectMapping implements MappingInterface
 
         if (null === $unapply) {
             $unapply = function ($value) {
-                Assertion::isInstanceOf($value, $this->className);
+                if (!$value instanceof $this->className) {
+                    throw MappedClassMismatchException::fromMismatchedClass($this->className, $value);
+                }
 
                 $values = [];
                 $reflectionClass = new ReflectionClass($this->className);
@@ -111,7 +125,9 @@ final class ObjectMapping implements MappingInterface
         $apply = $this->apply;
         $value = $apply(...array_values($arguments));
 
-        Assertion::isInstanceOf($value, $this->className);
+        if (!$value instanceof $this->className) {
+            throw MappedClassMismatchException::fromMismatchedClass($this->className, $value);
+        }
 
         return $this->applyConstraints($value, $this->key);
     }
@@ -121,10 +137,16 @@ final class ObjectMapping implements MappingInterface
         $data = Data::none();
         $unapply = $this->unapply;
         $values = $unapply($value);
-        Assertion::isArray($values);
+
+        if (!is_array($values)) {
+            throw InvalidUnapplyResultException::fromInvalidUnapplyResult($values);
+        }
 
         foreach ($this->mappings as $key => $mapping) {
-            Assertion::keyExists($values, $key);
+            if (!array_key_exists($key, $values)) {
+                throw NonExistentUnapplyKeyException::fromNonExistentUnapplyKey($key);
+            }
+
             $data = $data->merge($mapping->unbind($values[$key]));
         }
 

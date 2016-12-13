@@ -3,9 +3,10 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Mapping\Constraint;
 
-use Assert\Assertion;
+use DASPRiD\Formidable\Mapping\Constraint\Exception\InvalidLengthException;
+use DASPRiD\Formidable\Mapping\Constraint\Exception\InvalidTypeException;
 
-class MaxLengthConstraint implements ConstraintInterface
+final class MaxLengthConstraint implements ConstraintInterface
 {
     /**
      * @var int
@@ -19,7 +20,9 @@ class MaxLengthConstraint implements ConstraintInterface
 
     public function __construct(int $lengthLimit, $encoding = 'utf-8')
     {
-        Assertion::greaterOrEqualThan($lengthLimit, 0);
+        if ($lengthLimit < 0) {
+            throw InvalidLengthException::fromNegativeLength($lengthLimit);
+        }
 
         $this->lengthLimit = $lengthLimit;
         $this->encoding = $encoding;
@@ -27,7 +30,9 @@ class MaxLengthConstraint implements ConstraintInterface
 
     public function __invoke($value) : ValidationResult
     {
-        Assertion::string($value);
+        if (!is_string($value)) {
+            throw InvalidTypeException::fromInvalidType($value, 'string');
+        }
 
         if (iconv_strlen($value, $this->encoding) > $this->lengthLimit) {
             return new ValidationResult(new ValidationError('error.max-length', ['lengthLimit' => $this->lengthLimit]));

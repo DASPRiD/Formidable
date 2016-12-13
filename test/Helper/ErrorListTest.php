@@ -3,11 +3,12 @@ declare(strict_types = 1);
 
 namespace DASPRiD\FormidableTest\Helper;
 
-use Assert\AssertionFailedException;
 use DASPRiD\Formidable\FormError\FormError;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
 use DASPRiD\Formidable\Helper\ErrorFormatter;
 use DASPRiD\Formidable\Helper\ErrorList;
+use DASPRiD\Formidable\Helper\Exception\InvalidHtmlAttributeKeyException;
+use DASPRiD\Formidable\Helper\Exception\InvalidHtmlAttributeValueException;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
@@ -49,20 +50,20 @@ class ErrorListTest extends TestCase
         );
     }
 
-    public function testAssertionOnInvalidAttributeKey()
+    public function testExceptionOnInvalidAttributeKey()
     {
         $helper = new ErrorList(new ErrorFormatter());
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidHtmlAttributeKeyException::class);
         $helper(
             new FormErrorSequence(new FormError('', 'error.required')),
             [1 => 'test']
         );
     }
 
-    public function testAssertionOnInvalidAttributeValue()
+    public function testExceptionOnInvalidAttributeValue()
     {
         $helper = new ErrorList(new ErrorFormatter());
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidHtmlAttributeValueException::class);
         $helper(
             new FormErrorSequence(new FormError('', 'error.required')),
             ['test' => 1]

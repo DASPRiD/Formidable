@@ -3,8 +3,8 @@ declare(strict_types = 1);
 
 namespace DASPRiD\FormidableTest\Mapping\Constraint;
 
-use Assert\AssertionFailedException;
 use DASPRiD\Formidable\Mapping\Constraint\EmailAddressConstraint;
+use DASPRiD\Formidable\Mapping\Constraint\Exception\InvalidTypeException;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
@@ -15,7 +15,7 @@ class EmailAddressConstraintTest extends TestCase
     public function testAssertionWithInvalidValueType()
     {
         $constraint = new EmailAddressConstraint();
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidTypeException::class);
         $constraint(1);
     }
 

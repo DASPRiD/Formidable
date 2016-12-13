@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace DASPRiD\FormidableTest\Helper;
 
 use DASPRiD\Formidable\Helper\ErrorFormatter;
-use DASPRiD\Formidable\Helper\Exception\NonExistentMessage;
+use DASPRiD\Formidable\Helper\Exception\NonExistentMessageException;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
@@ -63,7 +63,7 @@ class ErrorFormatterTest extends TestCase
     public function testExceptionOnNonExistentMessage()
     {
         $errorFormatter = new ErrorFormatter();
-        $this->expectException(NonExistentMessage::class);
+        $this->expectException(NonExistentMessageException::class);
         $errorFormatter('error.foo');
     }
 }

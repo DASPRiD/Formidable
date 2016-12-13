@@ -3,13 +3,13 @@ declare(strict_types = 1);
 
 namespace DASPRiD\FormidableTest\Mapping;
 
-use Assert\AssertionFailedException;
 use DASPRiD\Formidable\Data;
 use DASPRiD\Formidable\FormError\FormError;
 use DASPRiD\Formidable\Mapping\BindResult;
 use DASPRiD\Formidable\Mapping\Constraint\ConstraintInterface;
 use DASPRiD\Formidable\Mapping\Constraint\ValidationError;
 use DASPRiD\Formidable\Mapping\Constraint\ValidationResult;
+use DASPRiD\Formidable\Mapping\Exception\InvalidTypeException;
 use DASPRiD\Formidable\Mapping\MappingInterface;
 use DASPRiD\Formidable\Mapping\RepeatedMapping;
 use PHPUnit_Framework_TestCase as TestCase;
@@ -97,7 +97,7 @@ class RepeatedMappingTest extends TestCase
     public function testUnbindInvalidValue()
     {
         $mapping = new RepeatedMapping($this->prophesize(MappingInterface::class)->reveal());
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidTypeException::class);
         $mapping->unbind('test');
     }
 

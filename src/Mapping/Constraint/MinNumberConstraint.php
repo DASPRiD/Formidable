@@ -3,10 +3,12 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Mapping\Constraint;
 
-use Assert\Assertion;
+use DASPRiD\Formidable\Mapping\Constraint\Exception\InvalidLimitException;
+use DASPRiD\Formidable\Mapping\Constraint\Exception\InvalidTypeException;
+use DASPRiD\Formidable\Mapping\Constraint\Exception\MissingDecimalDependencyException;
 use Litipk\BigNumbers\Decimal;
 
-class MinNumberConstraint implements ConstraintInterface
+final class MinNumberConstraint implements ConstraintInterface
 {
     /**
      * @var Decimal
@@ -18,14 +20,25 @@ class MinNumberConstraint implements ConstraintInterface
      */
     public function __construct($limit)
     {
-        Assertion::classExists(Decimal::class);
-        Assertion::numeric($limit);
+        if (!class_exists(Decimal::class)) {
+            // @codeCoverageIgnoreStart
+            throw MissingDecimalDependencyException::fromMissingDependency();
+            // @codeCoverageIgnoreEnd
+        }
+
+        if (!is_numeric($limit)) {
+            throw InvalidLimitException::fromNonNumericValue($limit);
+        }
+
         $this->limit = Decimal::fromString((string) $limit);
     }
 
     public function __invoke($value) : ValidationResult
     {
-        Assertion::numeric($value);
+        if (!is_numeric($value)) {
+            throw InvalidTypeException::fromNonNumericValue($value);
+        }
+
         $decimalValue = Decimal::fromString((string) $value);
 
         if ($decimalValue->comp($this->limit) === -1) {

@@ -3,7 +3,8 @@ declare(strict_types = 1);
 
 namespace DASPRiD\FormidableTest\Mapping\Constraint;
 
-use Assert\AssertionFailedException;
+use DASPRiD\Formidable\Mapping\Constraint\Exception\InvalidLimitException;
+use DASPRiD\Formidable\Mapping\Constraint\Exception\InvalidTypeException;
 use DASPRiD\Formidable\Mapping\Constraint\MinNumberConstraint;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -64,14 +65,14 @@ class MinNumberConstraintTest extends TestCase
 
     public function testAssertionWithInvalidLimitType()
     {
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidLimitException::class);
         new MinNumberConstraint('test');
     }
 
     public function testAssertionWithNonNumericValueType()
     {
         $constraint = new MinNumberConstraint(0);
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidTypeException::class);
         $constraint('test');
     }
 }

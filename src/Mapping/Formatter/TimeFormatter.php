@@ -3,10 +3,10 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Mapping\Formatter;
 
-use Assert\Assertion;
 use DASPRiD\Formidable\Data;
 use DASPRiD\Formidable\FormError\FormError;
 use DASPRiD\Formidable\Mapping\BindResult;
+use DASPRiD\Formidable\Mapping\Formatter\Exception\InvalidTypeException;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
@@ -65,7 +65,10 @@ final class TimeFormatter implements FormatterInterface
      */
     public function unbind(string $key, $value) : Data
     {
-        Assertion::isInstanceOf($value, DateTimeInterface::class);
+        if (!$value instanceof DateTimeInterface) {
+            throw InvalidTypeException::fromInvalidType($value, 'DateTimeInterface');
+        }
+
         $dateTime = $value->setTimezone($this->timeZone);
 
         if ((int) $dateTime->format('u') > 0) {

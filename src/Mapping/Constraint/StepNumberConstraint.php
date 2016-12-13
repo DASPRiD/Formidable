@@ -3,12 +3,13 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Mapping\Constraint;
 
-use Assert\Assertion;
+use DASPRiD\Formidable\Mapping\Constraint\Exception\InvalidStepException;
+use DASPRiD\Formidable\Mapping\Constraint\Exception\InvalidTypeException;
+use DASPRiD\Formidable\Mapping\Constraint\Exception\MissingDecimalDependencyException;
 use Litipk\BigNumbers\Decimal;
 use Litipk\BigNumbers\DecimalConstants;
-use function Assert\thatNullOr;
 
-class StepNumberConstraint implements ConstraintInterface
+final class StepNumberConstraint implements ConstraintInterface
 {
     /**
      * @var Decimal
@@ -26,12 +27,25 @@ class StepNumberConstraint implements ConstraintInterface
      */
     public function __construct($step, $base = null)
     {
-        Assertion::classExists(Decimal::class);
-        Assertion::numeric($step);
+        if (!class_exists(Decimal::class)) {
+            // @codeCoverageIgnoreStart
+            throw MissingDecimalDependencyException::fromMissingDependency();
+            // @codeCoverageIgnoreEnd
+        }
+
+        if (!is_numeric($step)) {
+            throw InvalidStepException::fromNonNumericStep($step);
+        }
+
         $decimalStep = Decimal::fromString((string) $step);
 
-        Assertion::true($decimalStep->comp(DecimalConstants::zero()) > 0);
-        thatNullOr($base)->numeric();
+        if ($decimalStep->comp(DecimalConstants::zero()) <= 0) {
+            throw InvalidStepException::fromZeroOrNegativeStep($decimalStep);
+        }
+
+        if (null !== $base && !is_numeric($base)) {
+            throw InvalidStepException::fromNonNumericBase($base);
+        }
 
         $this->step = $decimalStep;
         $this->base = null === $base ? DecimalConstants::zero() : Decimal::fromString((string) $base);
@@ -39,7 +53,10 @@ class StepNumberConstraint implements ConstraintInterface
 
     public function __invoke($value) : ValidationResult
     {
-        Assertion::numeric($value);
+        if (!is_numeric($value)) {
+            throw InvalidTypeException::fromNonNumericValue($value);
+        }
+
         $decimalValue = Decimal::fromString((string) $value);
         $floorModulo = $this->floorModulo($decimalValue->sub($this->base), $this->step);
 

@@ -3,10 +3,10 @@ declare(strict_types = 1);
 
 namespace DASPRiD\Formidable\Mapping\Formatter;
 
-use Assert\Assertion;
 use DASPRiD\Formidable\Data;
 use DASPRiD\Formidable\FormError\FormError;
 use DASPRiD\Formidable\Mapping\BindResult;
+use DASPRiD\Formidable\Mapping\Formatter\Exception\InvalidTypeException;
 
 final class BooleanFormatter implements FormatterInterface
 {
@@ -34,7 +34,10 @@ final class BooleanFormatter implements FormatterInterface
      */
     public function unbind(string $key, $value) : Data
     {
-        Assertion::boolean($value);
+        if (!is_bool($value)) {
+            throw InvalidTypeException::fromInvalidType($value, 'bool');
+        }
+
         return Data::fromFlatArray([$key => $value ? 'true' : 'false']);
     }
 }

@@ -3,9 +3,9 @@ declare(strict_types = 1);
 
 namespace DASPRiD\FormidableTest\Mapping\Formatter;
 
-use Assert\AssertionFailedException;
 use DASPRiD\Formidable\Data;
 use DASPRiD\Formidable\Mapping\Formatter\BooleanFormatter;
+use DASPRiD\Formidable\Mapping\Formatter\Exception\InvalidTypeException;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
@@ -53,7 +53,7 @@ class BooleanFormatterTest extends TestCase
 
     public function testUnbindInvalidStringValue()
     {
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidTypeException::class);
         (new BooleanFormatter())->unbind('foo', 'false');
     }
 }

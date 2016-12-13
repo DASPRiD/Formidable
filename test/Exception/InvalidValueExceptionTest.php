@@ -3,19 +3,19 @@ declare(strict_types = 1);
 
 namespace DASPRiD\FormidableTest\Exception;
 
-use DASPRiD\Formidable\Exception\InvalidValue;
+use DASPRiD\Formidable\Exception\InvalidValueException;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
- * @covers DASPRiD\Formidable\Exception\InvalidValue
+ * @covers DASPRiD\Formidable\Exception\InvalidValueException
  */
-class InvalidValueTest extends TestCase
+class InvalidValueExceptionTest extends TestCase
 {
     public function testFromArrayWithNonStringKeys()
     {
         $this->assertSame(
             'Non-string value in array found',
-            InvalidValue::fromArrayWithNonStringValues([])->getMessage()
+            InvalidValueException::fromArrayWithNonStringValues([])->getMessage()
         );
     }
 
@@ -23,7 +23,7 @@ class InvalidValueTest extends TestCase
     {
         $this->assertSame(
             'Expected string or array value, but "boolean" was provided',
-            InvalidValue::fromNonNestedValue(true)->getMessage()
+            InvalidValueException::fromNonNestedValue(true)->getMessage()
         );
     }
 }

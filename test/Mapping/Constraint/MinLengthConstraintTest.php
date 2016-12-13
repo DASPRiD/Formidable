@@ -3,7 +3,8 @@ declare(strict_types = 1);
 
 namespace DASPRiD\FormidableTest\Mapping\Constraint;
 
-use Assert\AssertionFailedException;
+use DASPRiD\Formidable\Mapping\Constraint\Exception\InvalidLengthException;
+use DASPRiD\Formidable\Mapping\Constraint\Exception\InvalidTypeException;
 use DASPRiD\Formidable\Mapping\Constraint\MinLengthConstraint;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -14,14 +15,14 @@ class MinLengthConstraintTest extends TestCase
 {
     public function testAssertionWithInvalidLength()
     {
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidLengthException::class);
         new MinLengthConstraint(-1);
     }
 
     public function testAssertionWithInvalidValueType()
     {
         $constraint = new MinLengthConstraint(0);
-        $this->expectException(AssertionFailedException::class);
+        $this->expectException(InvalidTypeException::class);
         $constraint(1);
     }
 

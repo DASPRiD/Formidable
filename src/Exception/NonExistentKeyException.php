@@ -5,7 +5,7 @@ namespace DASPRiD\Formidable\Exception;
 
 use OutOfBoundsException;
 
-class NonExistentKey extends OutOfBoundsException implements ExceptionInterface
+final class NonExistentKeyException extends OutOfBoundsException implements ExceptionInterface
 {
     public static function fromNonExistentKey(string $key)
     {

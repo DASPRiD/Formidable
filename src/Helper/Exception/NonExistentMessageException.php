@@ -5,9 +5,9 @@ namespace DASPRiD\Formidable\Helper\Exception;
 
 use OutOfBoundsException;
 
-class NonExistentMessage extends OutOfBoundsException implements ExceptionInterface
+final class NonExistentMessageException extends OutOfBoundsException implements ExceptionInterface
 {
-    public static function fromNonExistentMessageKey(string $key)
+    public static function fromNonExistentMessageKey(string $key) : self
     {
         return new self(sprintf('Non-existent message key "%s" provided', $key));
     }
