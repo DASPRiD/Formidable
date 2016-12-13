@@ -19,6 +19,11 @@ final class FieldMappingFactory
     {
     }
 
+    public static function ignored($value) : FieldMapping
+    {
+        return new FieldMapping(new Formatter\IgnoredFormatter($value));
+    }
+
     public static function text(int $minLength = 0, int $maxLength = null, $encoding = 'utf-8') : FieldMapping
     {
         $mapping = new FieldMapping(new Formatter\TextFormatter());
@@ -34,15 +39,9 @@ final class FieldMappingFactory
         return $mapping;
     }
 
-    public static function nonEmptyText(int $maxLength = null, $encoding = 'utf-8') : FieldMapping
+    public static function nonEmptyText(int $minLength = 0, int $maxLength = null, $encoding = 'utf-8') : FieldMapping
     {
-        $constraints = [new Constraint\NotEmptyConstraint()];
-
-        if (null !== $maxLength) {
-            $constraints[] = new Constraint\MaxLengthConstraint($maxLength, $encoding);
-        }
-
-        return self::text()->verifying(new Constraint\ChainConstraint(true, ...$constraints));
+        return self::text($minLength, $maxLength, $encoding)->verifying(new Constraint\NotEmptyConstraint());
     }
 
     public static function emailAddress() : FieldMapping
