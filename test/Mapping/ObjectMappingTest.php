@@ -9,15 +9,18 @@ use DASPRiD\Formidable\Mapping\BindResult;
 use DASPRiD\Formidable\Mapping\Constraint\ConstraintInterface;
 use DASPRiD\Formidable\Mapping\Constraint\ValidationError;
 use DASPRiD\Formidable\Mapping\Constraint\ValidationResult;
+use DASPRiD\Formidable\Mapping\Exception\BindFailureException;
 use DASPRiD\Formidable\Mapping\Exception\InvalidMappingException;
 use DASPRiD\Formidable\Mapping\Exception\InvalidMappingKeyException;
 use DASPRiD\Formidable\Mapping\Exception\InvalidUnapplyResultException;
 use DASPRiD\Formidable\Mapping\Exception\MappedClassMismatchException;
 use DASPRiD\Formidable\Mapping\Exception\NonExistentMappedClassException;
 use DASPRiD\Formidable\Mapping\Exception\NonExistentUnapplyKeyException;
+use DASPRiD\Formidable\Mapping\Exception\UnbindFailureException;
 use DASPRiD\Formidable\Mapping\MappingInterface;
 use DASPRiD\Formidable\Mapping\ObjectMapping;
 use DASPRiD\FormidableTest\Mapping\TestAsset\SimpleObject;
+use Exception;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use stdClass;
@@ -98,6 +101,22 @@ class ObjectMappingTest extends TestCase
         $this->assertSame('bat', iterator_to_array($bindResult->getFormErrorSequence())[0]->getMessage());
     }
 
+    public function testExceptionOnBind()
+    {
+        $data = Data::fromFlatArray(['foo' => 'bar']);
+
+        $mapping = $this->prophesize(MappingInterface::class);
+        $mapping->bind($data)->willThrow(new Exception('test'));
+        $mapping->withPrefixAndRelativeKey('', 'foo')->willReturn($mapping->reveal());
+
+        $objectMapping = new ObjectMapping([
+            'foo' => $mapping->reveal(),
+        ], SimpleObject::class);
+
+        $this->expectException(BindFailureException::class);
+        $objectMapping->bind($data);
+    }
+
     public function testBindAppliesConstraints()
     {
         $constraint = $this->prophesize(ConstraintInterface::class);
@@ -149,6 +168,20 @@ class ObjectMappingTest extends TestCase
 
         $this->expectException(NonExistentUnapplyKeyException::class);
         $objectMapping->unbind(new SimpleObject('baz', 'bat'));
+    }
+
+    public function testExceptionOnUnbind()
+    {
+        $mapping = $this->prophesize(MappingInterface::class);
+        $mapping->unbind('bar')->willThrow(new Exception('test'));
+        $mapping->withPrefixAndRelativeKey('', 'foo')->willReturn($mapping->reveal());
+
+        $objectMapping = new ObjectMapping([
+            'foo' => $mapping->reveal(),
+        ], SimpleObject::class);
+
+        $this->expectException(UnbindFailureException::class);
+        $objectMapping->unbind(new SimpleObject('bar', ''));
     }
 
     public function testInvalidUnapplyReturnValue()

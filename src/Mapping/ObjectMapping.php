@@ -5,14 +5,17 @@ namespace DASPRiD\Formidable\Mapping;
 
 use DASPRiD\Formidable\Data;
 use DASPRiD\Formidable\FormError\FormErrorSequence;
+use DASPRiD\Formidable\Mapping\Exception\BindFailureException;
 use DASPRiD\Formidable\Mapping\Exception\InvalidMappingException;
 use DASPRiD\Formidable\Mapping\Exception\InvalidMappingKeyException;
 use DASPRiD\Formidable\Mapping\Exception\InvalidUnapplyResultException;
 use DASPRiD\Formidable\Mapping\Exception\MappedClassMismatchException;
 use DASPRiD\Formidable\Mapping\Exception\NonExistentMappedClassException;
 use DASPRiD\Formidable\Mapping\Exception\NonExistentUnapplyKeyException;
+use DASPRiD\Formidable\Mapping\Exception\UnbindFailureException;
 use ReflectionClass;
 use ReflectionProperty;
+use Throwable;
 
 final class ObjectMapping implements MappingInterface
 {
@@ -108,7 +111,11 @@ final class ObjectMapping implements MappingInterface
         $formErrorSequence = new FormErrorSequence();
 
         foreach ($this->mappings as $key => $mapping) {
-            $bindResult = $mapping->bind($data);
+            try {
+                $bindResult = $mapping->bind($data);
+            } catch (Throwable $e) {
+                throw BindFailureException::fromBindException($key, $e);
+            }
 
             if (!$bindResult->isSuccess()) {
                 $formErrorSequence = $formErrorSequence->merge($bindResult->getFormErrorSequence());
@@ -147,7 +154,11 @@ final class ObjectMapping implements MappingInterface
                 throw NonExistentUnapplyKeyException::fromNonExistentUnapplyKey($key);
             }
 
-            $data = $data->merge($mapping->unbind($values[$key]));
+            try {
+                $data = $data->merge($mapping->unbind($values[$key]));
+            } catch (Throwable $e) {
+                throw UnbindFailureException::fromUnbindException($key, $e);
+            }
         }
 
         return $data;
