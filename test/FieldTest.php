@@ -47,6 +47,17 @@ class FieldTest extends TestCase
         $this->assertTrue($field->hasErrors());
     }
 
+    public function testGetIndexes()
+    {
+        $field = new Field('foo', '', new FormErrorSequence(), Data::fromFlatArray([
+            'foo[0]' => 'bar0',
+            'foo[1]' => 'bar1',
+            'foo[2][baz]' => 'bar2',
+        ]));
+
+        $this->assertSame(['0', '1', '2'], $field->getIndexes());
+    }
+
     public function testGetNestedValues()
     {
         $field = new Field('foo', '', new FormErrorSequence(), Data::fromFlatArray([

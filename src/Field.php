@@ -56,13 +56,21 @@ final class Field
     }
 
     /**
-     * @return array[]
+     * @return string[]
+     */
+    public function getIndexes() : array
+    {
+        return $this->data->getIndexes($this->key);
+    }
+
+    /**
+     * @return string[]
      */
     public function getNestedValues() : array
     {
         $values = [];
 
-        foreach ($this->data->getIndexes($this->key) as $index) {
+        foreach ($this->getIndexes() as $index) {
             $key = $this->key . '[' . $index . ']';
 
             if ($this->data->hasKey($key)) {

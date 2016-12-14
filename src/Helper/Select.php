@@ -5,7 +5,6 @@ namespace DASPRiD\Formidable\Helper;
 
 use DASPRiD\Formidable\Field;
 use DASPRiD\Formidable\Helper\Exception\InvalidSelectLabelException;
-use DASPRiD\Formidable\Helper\Exception\InvalidSelectValueException;
 use DOMDocument;
 use DOMNode;
 
