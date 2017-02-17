@@ -48,6 +48,14 @@ final class Form implements FormInterface
         return $form;
     }
 
+    public function withDefaults(Data $data) : FormInterface
+    {
+        $form = clone $this;
+        $form->data = $data;
+
+        return $form;
+    }
+
     public function bind(Data $data) : FormInterface
     {
         $form = clone $this;

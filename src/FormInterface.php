@@ -11,6 +11,8 @@ interface FormInterface
 {
     public function fill($formData) : self;
 
+    public function withDefaults(Data $data) : self;
+
     public function bind(Data $data) : self;
 
     public function bindFromRequest(ServerRequestInterface $request, bool $trimData = true) : self;

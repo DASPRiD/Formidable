@@ -19,6 +19,19 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class FormTest extends TestCase
 {
+    public function testWithDefaults()
+    {
+        $data = Data::fromFlatArray(['foo' => 'bar']);
+
+        $mapping = $this->prophesize(MappingInterface::class);
+        $mapping->bind()->shouldNotBeCalled();
+
+        $form = (new Form($mapping->reveal()))->withDefaults($data);
+
+        $this->assertFalse($form->hasErrors());
+        $this->assertSame('bar', $form->getField('foo')->getValue());
+    }
+
     public function testBindValidData()
     {
         $data = Data::none();
