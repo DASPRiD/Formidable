@@ -47,7 +47,7 @@ $mapping = FieldMappingFactory::text()->verifying(new PatternConstraint());
     as you assign the constraint to the correct mapping , but since we do not have generics yet, you should actually
     assert the input type which you receive.
 
-See [Assert package on Github](https://github.com/beberlei/assert)
+    See [Assert package on Github](https://github.com/beberlei/assert)
 
 # Context validation
 
