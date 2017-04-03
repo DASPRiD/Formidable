@@ -26,7 +26,7 @@
         "ext-intl": "*",
         "phpunit/phpunit": "^5.3",
         "squizlabs/php_codesniffer": "^2.6",
-        "litipk/php-bignumbers": "^0.7.3"
+        "litipk/php-bignumbers": "^0.8"
     },
     "suggest": {
         "ext-iconv": "Allows using the built-in string length constraints",
