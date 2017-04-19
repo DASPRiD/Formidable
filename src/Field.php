@@ -66,7 +66,7 @@ final class Field
     /**
      * @return string[]
      */
-    public function getNestedValues() : array
+    public function getNestedValues(bool $preserveKeys = false) : array
     {
         $values = [];
 
@@ -74,7 +74,11 @@ final class Field
             $key = $this->key . '[' . $index . ']';
 
             if ($this->data->hasKey($key)) {
-                $values[] = $this->data->getValue($key);
+                if ($preserveKeys) {
+                    $values[$index] = $this->data->getValue($key);
+                } else {
+                    $values[] = $this->data->getValue($key);
+                }
             }
         }
 
