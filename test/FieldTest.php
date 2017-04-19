@@ -82,4 +82,15 @@ class FieldTest extends TestCase
             'baz' => 'baz0'
         ], $field->getNestedValues(true));
     }
+
+    public function testGetNestedValuesNoPreserveKeys()
+    {
+        $field = new Field('foo', '', new FormErrorSequence(), Data::fromFlatArray([
+            'foo[bar]' => 'bar0',
+            'foo[baz]' => 'baz0',
+            'foo[1][baz]' => 'bar2',
+        ]));
+
+        $this->assertSame(['bar0', 'baz0'], $field->getNestedValues());
+    }
 }
