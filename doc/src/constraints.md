@@ -1,6 +1,6 @@
 All built-in mappings support additional validation. To assign a constraint to a mapping, you can call the
 `verifying(ConstraintInterface $constraint)` method on it, which will return a new instance of the mapping with the
-constraint added to it. You can call the method multiple times to generated an object with multiple constraints
+constraint added to it. You can call the method multiple times to generate an object with multiple constraints
 assigned.
 
 While Formidable ships with a small set of constraints, these are primarily consumed by the `FieldMappingFactory`, so
