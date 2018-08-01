@@ -13,6 +13,7 @@ use DASPRiD\Formidable\Mapping\MappingInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * @covers DASPRiD\Formidable\Form
@@ -81,6 +82,37 @@ class FormTest extends TestCase
         $request = $this->prophesize(ServerRequestInterface::class);
         $request->getMethod()->willReturn('POST');
         $request->getParsedBody()->willReturn(['foo' => 'bar']);
+
+        $mapping = $this->prophesize(MappingInterface::class);
+        $mapping->bind(Argument::that(function (Data $data) {
+            return $data->hasKey('foo') && 'bar' === $data->getValue('foo');
+        }))->willReturn(BindResult::fromValue('bar'))->shouldBeCalled();
+
+        $form = (new Form($mapping->reveal()))->bindFromRequest($request->reveal());
+
+        $this->assertFalse($form->hasErrors());
+        $this->assertSame('bar', $form->getValue());
+    }
+
+    public function specialMethodProvider() : array
+    {
+        return [
+            ['PATCH'],
+            ['PUT'],
+        ];
+    }
+
+    /**
+     * @dataProvider specialMethodProvider
+     */
+    public function testBindFromPatchRequest(string $method)
+    {
+        $stream = $this->prophesize(StreamInterface::class);
+        $stream->__toString()->willReturn('foo=bar');
+
+        $request = $this->prophesize(ServerRequestInterface::class);
+        $request->getMethod()->willReturn($method);
+        $request->getBody()->willReturn($stream->reveal());
 
         $mapping = $this->prophesize(MappingInterface::class);
         $mapping->bind(Argument::that(function (Data $data) {

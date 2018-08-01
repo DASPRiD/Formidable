@@ -76,6 +76,9 @@ final class Form implements FormInterface
     {
         if ('POST' === $request->getMethod()) {
             $data = Data::fromNestedArray($request->getParsedBody());
+        } elseif (in_array($request->getMethod(), ['PUT', 'PATCH'])) {
+            parse_str((string) $request->getBody(), $rawData);
+            $data = Data::fromNestedArray($rawData);
         } else {
             $data = Data::fromNestedArray($request->getQueryParams());
         }
